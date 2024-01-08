@@ -1,0 +1,26 @@
+# Expected project structure for 'Spring Boot'
+
+
+/src
+|-- /main
+|   |-- /java
+|   |   |-- /com/example/grievance
+|   |   |   |-- /config
+|   |   |   |   |-- WebSecurityConfig.java
+|   |   |   |-- /controller
+|   |   |   |   |-- AuthController.java
+|   |   |   |   |-- GrievanceController.java
+|   |   |   |-- /model
+|   |   |   |   |-- User.java
+|   |   |   |   |-- Grievance.java
+|   |   |   |-- /repository
+|   |   |   |   |-- UserRepository.java
+|   |   |   |   |-- GrievanceRepository.java
+|   |   |   |-- /service
+|   |   |   |   |-- AuthService.java
+|   |   |   |   |-- GrievanceService.java
+|   |   |-- GrievancePortalApplication.java
+|-- /resources
+|   |-- /static
+|   |-- /templates
+|   |-- application.properties
