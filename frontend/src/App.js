@@ -8,13 +8,13 @@ import { ThemeProvider } from "@emotion/react"
 import theme from './theme'
 
 //* pages imports 
-import Main from './pages/Main'
+import MainDashboardPage from './pages/Dashboard/MainDashboardPage'
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <React.Fragment>
-        <Main />
+        <MainDashboardPage />
       </React.Fragment>
     </ThemeProvider>
   )
