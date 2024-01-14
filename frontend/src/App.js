@@ -8,13 +8,24 @@ import { ThemeProvider } from "@emotion/react"
 import theme from './theme'
 
 //* pages imports 
-import MainDashboardPage from './pages/Dashboard/MainDashboardPage'
+import Dashboard from './pages/Dashboard'
+import GrievanceForm from './pages/GrievanceForm'
+
+//* react router imports 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Navbar from './sections/Navbar'
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <React.Fragment>
-        <MainDashboardPage />
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/form" element={<GrievanceForm />} />
+          </Routes>
+        </Router>
       </React.Fragment>
     </ThemeProvider>
   )
