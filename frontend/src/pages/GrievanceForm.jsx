@@ -1,14 +1,5 @@
-//* MUI components import
-import { Box } from "@mui/material";
-
-//* native component import
-import MarginTopBox from "../components/MarginTopBox";
-import SubContainer from "../components/SubContainer";
+import Banner from "../sections/form/Banner";
 
 export default function MainFormPage() {
-  return (
-    <MarginTopBox>
-      <SubContainer>Main Form</SubContainer>
-    </MarginTopBox>
-  );
+  return <Banner />;
 }

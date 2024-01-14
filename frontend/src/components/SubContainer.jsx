@@ -5,6 +5,8 @@ import { Box, styled } from "@mui/material";
 const SubBox = styled(Box)(({ theme }) => ({
   width: "1200px", // desktop first approach
   margin: "auto",
+  height: "100%",
+  // backgroundColor: "red",
 
   [theme.breakpoints.down("lg")]: {
     width: "900px",

@@ -1,5 +1,5 @@
 //* MUI components imports
-import { Box, styled } from "@mui/material";
+import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 
 //* native components import
 import CustomH3 from "../../components/CustomH3";
@@ -7,49 +7,57 @@ import ContainedButton from "../../components/ContainedButton";
 import SubContainer from "../../components/SubContainer";
 import BannerBG from "../../components/BannerBG";
 
+import {
+  BANNER_SIZE_DASHBOARD,
+  BANNER_SIZE_DASHBOARD_MD,
+  FONTSIZE_BIGGER,
+} from "../../data/constants";
+
 //* react router dom
 import { Link } from "react-router-dom";
 
 //? styled components
-const StyledContentBox = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  marginBottom: theme.spacing(3),
-}));
-
 const StyledSubCtn = styled(Box)(({ theme }) => ({
-  paddingTop: theme.spacing(10),
   display: "flex",
+  height: "100%",
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
 
   [theme.breakpoints.down("md")]: {
-    paddingTop: theme.spacing(3),
     alignItems: "start",
+    justifyContent: "center",
     flexDirection: "column",
   },
 }));
 
+//? constants
+
 export default function Banner() {
+  //? useMediaQuery
+  const theme = useTheme();
+  const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
-    <BannerBG>
+    <BannerBG
+      height={
+        isScreenSmaller ? BANNER_SIZE_DASHBOARD_MD : BANNER_SIZE_DASHBOARD
+      }
+    >
       <SubContainer className="something">
         <StyledSubCtn>
-          <StyledContentBox>
-            <CustomH3 fontSize="2rem" color="white">
-              Raised Grievances
-            </CustomH3>
-
-            <CustomH3 fontSize="1.25rem" fontWeight={400} color="white">
-              Raise / Update
-            </CustomH3>
-          </StyledContentBox>
+          <CustomH3 fontSize={FONTSIZE_BIGGER} color="white">
+            Student Dashboard
+          </CustomH3>
 
           {/* //! Using Link component from 'react-router-dom' here */}
-          <Box component={Link} sx={{ textDecoration: "none" }} to="/form">
-            <ContainedButton padding="0.6rem 1.2rem">
+          <Box
+            component={Link}
+            sx={{ textDecoration: "none", marginTop: 2 }}
+            to="/form"
+            id="back-to-top-anchor"
+          >
+            <ContainedButton padding="0.6rem 1rem">
               Raise Grievance
             </ContainedButton>
           </Box>

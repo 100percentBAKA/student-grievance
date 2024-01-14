@@ -1,5 +1,6 @@
 //* native components import
-import CustomCard from "../../components/CustomCard";
+import CustomCard from "../../components/CustomCardDashboard";
+import { FONTSIZE_MEDIUM, FONTSIZE_SMALL } from "../../data/constants";
 
 //* data import
 import grievanceCardDisplayData from "../../data/grievanceCardDisplayData";
@@ -10,10 +11,10 @@ import { Box, Button, ButtonGroup, styled } from "@mui/material";
 //? styled components
 const StyledBtn = styled(Button)(({ theme }) => ({
   color: theme.palette.secondary.main,
-  fontSize: "1rem",
+  fontSize: FONTSIZE_MEDIUM,
 
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "0.85rem",
+  [theme.breakpoints.down("md")]: {
+    fontSize: FONTSIZE_SMALL,
   },
 }));
 
@@ -38,6 +39,7 @@ export default function CardContainer() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          fontSize: FONTSIZE_MEDIUM,
         }}
       >
         {["All", "Resolved", "Unresolved"].map((buttonText) => (

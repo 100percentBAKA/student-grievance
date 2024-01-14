@@ -4,30 +4,34 @@ import SubContainer from "./SubContainer";
 //* MUI components import
 import { Box, styled } from "@mui/material";
 
+//* import constants
+import { FONTSIZE_MEDIUM, FONTSIZE_SMALL } from "../data/constants";
+
 //? styled components
 const StyledMainCtn = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(2.5),
   display: "flex",
   flexDirection: "column",
   borderTop: "0.5px solid black",
   color: theme.palette.secondary.main,
-  fontSize: "1.335rem",
+  fontSize: FONTSIZE_MEDIUM,
   fontWeight: 500,
 
   [theme.breakpoints.down("sm")]: {
-    padding: theme.spacing(2.5),
-    fontSize: "1.2rem",
+    padding: theme.spacing(2),
+    fontSize: FONTSIZE_MEDIUM,
   },
 }));
 
 const StyledSubCtn = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
-  marginTop: theme.spacing(3),
+  marginTop: theme.spacing(2),
   justifyContent: "space-between",
 
   [theme.breakpoints.down("md")]: {
-    rowGap: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    rowGap: theme.spacing(2.5),
     flexDirection: "column",
   },
 }));
@@ -38,7 +42,7 @@ const StyledCatSpan = styled("span")(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   padding: "0 3px",
   transition: "background-color 0.2s ease-in-out",
-  fontSize: "0.85rem",
+  fontSize: FONTSIZE_SMALL,
 
   "&:hover": {
     backgroundColor: "#87CEEB",
@@ -56,9 +60,7 @@ export default function CustomCard({ title, cats, time }) {
               <StyledCatSpan key={index}>{cat}</StyledCatSpan>
             ))}
           </Box>
-          <Box sx={{ fontSize: "0.85rem" }}>
-            Asked: <StyledCatSpan>{time}</StyledCatSpan> ago
-          </Box>
+          <Box sx={{ fontSize: FONTSIZE_SMALL }}>Asked: {time} ago</Box>
         </StyledSubCtn>
       </StyledMainCtn>
     </SubContainer>
