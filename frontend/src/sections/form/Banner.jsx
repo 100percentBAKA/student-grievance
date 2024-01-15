@@ -47,7 +47,7 @@ export default function Banner() {
             <CustomH3 color="white" fontSize={FONTSIZE_BIGGER}>
               Writing a good grievance
             </CustomH3>
-            <ul>
+            <ul id="back-to-top-anchor">
               <StyledLi>Summarize your problem in a one-line title.</StyledLi>
               <StyledLi>Describe your problem in more detail.</StyledLi>
               <StyledLi>

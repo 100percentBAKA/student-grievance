@@ -20,12 +20,13 @@ const StyledBtn = styled(Button)(({ theme }) => ({
 
 const StyledBtnGrp = styled(ButtonGroup)(({ theme }) => ({
   marginTop: theme.spacing(3),
-  marginBottom: theme.spacing(5),
 }));
 
 const StyledCardCtn = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  marginTop: theme.spacing(5),
+  marginBottom: theme.spacing(5),
 }));
 
 export default function CardContainer() {

@@ -19,7 +19,6 @@ const StyledMainCtn = styled(Box)(({ theme }) => ({
 
   [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(2),
-    fontSize: FONTSIZE_MEDIUM,
   },
 }));
 
