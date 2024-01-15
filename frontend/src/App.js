@@ -7,6 +7,10 @@ import { ThemeProvider } from "@emotion/react"
 //* native theme imports 
 import theme from './theme'
 
+//* native components/sections imports 
+import ScrollTop from "./components/ScrollTop"
+import Footer from './sections/Footer'
+
 //* pages imports 
 import Dashboard from './pages/Dashboard'
 import GrievanceForm from './pages/GrievanceForm'
@@ -25,6 +29,8 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/form" element={<GrievanceForm />} />
           </Routes>
+          <ScrollTop />
+          <Footer />
         </Router>
       </React.Fragment>
     </ThemeProvider>

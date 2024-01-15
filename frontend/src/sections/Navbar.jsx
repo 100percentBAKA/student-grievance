@@ -66,19 +66,19 @@ const StyledAppBarCtn = styled(Box)(({ theme }) => ({
 
 const StyledImg = styled("img")(({ theme }) => ({
   maxWidth: "100%",
-  height: "71px",
+  height: "61px",
   transition: "height 0.3s ease-in-out", // css approach
 
   [theme.breakpoints.down("lg")]: {
-    height: "61px",
-  },
-
-  [theme.breakpoints.down("md")]: {
     height: "51px",
   },
 
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
     height: "41px",
+  },
+
+  [theme.breakpoints.down("sm")]: {
+    height: "31px",
   },
 }));
 
