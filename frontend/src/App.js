@@ -8,10 +8,12 @@ import Navbar from './sections/Navbar'
 
 //* pages imports 
 import Dashboard from './pages/Dashboard'
+import GrievancePortal from './pages/GrievancePortal'
 import GrievanceForm from './pages/GrievanceForm'
 
 //* react router imports 
 import { Routes, Route } from 'react-router-dom'
+import PageNotFound from './sections/PageNotFound'
 
 
 export default function App() {
@@ -20,7 +22,9 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/form" element={<GrievanceForm />} />
+        <Route path="/grievance/:grievanceID" element={<GrievancePortal />} />
+        <Route path="/forms" element={<GrievanceForm />} />
+        <Route path='*' element={<PageNotFound />}></Route>
       </Routes>
       <ScrollTop />
       <Footer />

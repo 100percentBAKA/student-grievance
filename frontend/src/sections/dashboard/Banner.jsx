@@ -54,7 +54,7 @@ export default function Banner() {
           <Box
             component={Link}
             sx={{ textDecoration: "none", marginTop: 2 }}
-            to="/form"
+            to="/forms"
             id="back-to-top-anchor"
           >
             <ContainedButton padding="0.6rem 1rem">

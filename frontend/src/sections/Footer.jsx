@@ -2,7 +2,6 @@
 import logoImg from "../assets/rnsit-logo.jpg";
 
 import BannerBG from "../components/BannerBG";
-import SubContainer from "../components/SubContainer";
 import CustomH3 from "../components/CustomH3";
 
 import { FONTSIZE_BIG, FONTSIZE_MEDIUM } from "../data/constants";
@@ -164,7 +163,7 @@ export default function Footer() {
             </StyledContentBox>
           </Box>
 
-          <Box sx={{ marginBottom: 2 }}>
+          <Box>
             <CustomH3 color="white" fontSize={FONTSIZE_MEDIUM}>
               Admissions
             </CustomH3>
@@ -179,7 +178,7 @@ export default function Footer() {
             </StyledContentBox>
           </Box>
 
-          <Box sx={{ marginBottom: 2 }}>
+          <Box>
             <CustomH3 color="white" fontSize={FONTSIZE_MEDIUM}>
               Accounts Manager
             </CustomH3>
