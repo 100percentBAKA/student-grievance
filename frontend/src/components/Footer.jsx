@@ -23,6 +23,7 @@ import SubContainer from "./ui/SubContainer";
 //? styled components
 const StyledMainCtn = styled(Box)(({ theme }) => ({
   paddingTop: theme.spacing(5),
+  paddingBottom: theme.spacing(5),
   color: "white",
   fontSize: FONTSIZE_MEDIUM,
 
@@ -43,9 +44,7 @@ const StyledAboutBox = styled(Box)(({ theme }) => ({
   rowGap: theme.spacing(3),
 
   [theme.breakpoints.down("md")]: {
-    // alignItems: "center",
     width: "100%",
-    // textAlign: "center",
   },
 }));
 
