@@ -1,6 +1,6 @@
 import { Button, styled } from "@mui/material";
 
-import { FONTSIZE_MEDIUM, FONTSIZE_SMALL } from "../data/constants";
+import { FONTSIZE_MEDIUM, FONTSIZE_SMALL } from "../../data/constants";
 
 const ContainedButton = ({ children, padding }) => {
   const CustomButton = styled(Button)(({ theme, padding }) => ({
