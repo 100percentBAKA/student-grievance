@@ -2,9 +2,9 @@
 import React from 'react'
 
 //* native components/sections imports 
-import ScrollTop from "./components/ScrollTop"
-import Footer from './sections/Footer'
-import Navbar from './sections/Navbar'
+import ScrollTop from "./components/ui/ScrollTop"
+import Footer from './components/Footer'
+import Navbar from './components/Navbar'
 
 //* pages imports 
 import Dashboard from './pages/Dashboard'
@@ -13,7 +13,7 @@ import GrievanceForm from './pages/GrievanceForm'
 
 //* react router imports 
 import { Routes, Route } from 'react-router-dom'
-import PageNotFound from './sections/PageNotFound'
+import PageNotFound from './pages/PageNotFound'
 
 
 export default function App() {

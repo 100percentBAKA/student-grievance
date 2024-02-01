@@ -31,7 +31,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //? styled components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -67,7 +67,7 @@ const StyledAppBarCtn = styled(Box)(({ theme }) => ({
 const StyledImg = styled("img")(({ theme }) => ({
   maxWidth: "100%",
   height: "61px",
-  transition: "height 0.3s ease-in-out", // css approach
+  transition: "height 0.3s ease-in-out",
 
   [theme.breakpoints.down("lg")]: {
     height: "51px",
@@ -120,15 +120,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const StyledIconBox = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "row",
-
-  [theme.breakpoints.down("md")]: {
-    display: "none",
-  },
-}));
-
 //? custom components
 const listView = [
   {
@@ -145,17 +136,8 @@ const listView = [
     id: 3,
     text: "Notification",
     icon: (
-      <Badge badgeContent={17} color="error">
+      <Badge badgeContent={3} color="error">
         <NotificationsIcon />
-      </Badge>
-    ),
-  },
-  {
-    id: 4,
-    text: "Messages",
-    icon: (
-      <Badge badgeContent={4} color="error">
-        <MailIcon />
       </Badge>
     ),
   },
@@ -185,9 +167,18 @@ const ListComponent = ({ closeMenu }) => (
 );
 
 export default function Navbar() {
-  // states
+  //? states for menu and drawer
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
+
+  //? states for handling notification and menu badge no
+  const [noNotif, setNoNotif] = useState(4);
+  const [menuBadge, setMenuBadge] = useState(true);
+
+  //? handle notification badge, useEffect prevents infinite loop
+  useEffect(() => {
+    if (noNotif === 0) setMenuBadge(false);
+  }, [noNotif]);
 
   //? useMediaQuery
   const theme = useTheme();
@@ -197,6 +188,7 @@ export default function Navbar() {
   const handleProfileClick = (event) => {
     setAnchorElMenu(event.currentTarget);
     setShowDrawer(true);
+    setMenuBadge(false);
   };
   const handleProfileClose = () => {
     setAnchorElMenu(null);
@@ -218,33 +210,6 @@ export default function Navbar() {
         </Search>
 
         <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <StyledIconBox>
-            <Tooltip title="Mail">
-              <IconButton
-                disableRipple
-                size="large"
-                aria-label="show 4 new mails"
-                color="inherit"
-              >
-                <Badge badgeContent={4} color="error">
-                  <MailIcon />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Notifications">
-              <IconButton
-                disableRipple
-                size="large"
-                aria-label="show 17 new notifications"
-                color="inherit"
-              >
-                <Badge badgeContent={17} color="error">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-          </StyledIconBox>
           <Tooltip title="Menu">
             <IconButton
               id="menu-btn-navbar"
@@ -257,7 +222,9 @@ export default function Navbar() {
               aria-expanded={open ? "true" : undefined}
               onClick={handleProfileClick}
             >
-              <Avatar alt="User" />
+              <Badge badgeContent={menuBadge ? 1 : 0} color="error">
+                <Avatar alt="User" />
+              </Badge>
             </IconButton>
           </Tooltip>
 
@@ -312,6 +279,14 @@ export default function Navbar() {
                 <Avatar /> My account
               </MenuItem>
               <Divider />
+              <MenuItem>
+                <ListItemIcon>
+                  <Badge badgeContent={noNotif} color="error">
+                    <NotificationsIcon fontSize="small" />
+                  </Badge>
+                </ListItemIcon>
+                Notification
+              </MenuItem>
               <MenuItem>
                 <ListItemIcon>
                   <SettingsIcon fontSize="small" />

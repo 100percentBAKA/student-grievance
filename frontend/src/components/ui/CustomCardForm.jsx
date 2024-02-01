@@ -2,7 +2,7 @@
 import { Box, styled } from "@mui/material";
 
 //* constants imports
-import { FONTSIZE_MEDIUM } from "../data/constants";
+import { FONTSIZE_MEDIUM } from "../../data/constants";
 
 //? styled components
 const StyledMainCtn = styled(Box)(({ theme, height }) => ({

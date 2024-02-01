@@ -1,4 +1,4 @@
-import bannerImg from "../assets/student-grievance-bg.jpg";
+import bannerImg from "../../assets/student-grievance-bg.jpg";
 
 import { Box, styled } from "@mui/material";
 
