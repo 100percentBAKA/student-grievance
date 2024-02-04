@@ -11,3 +11,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+/* Loading bar css */
+.loading-top-bar {
+  height: 4px;
+  width: 100%;
+  background-color: #ff6500;
+  animation: loading-animation 1s linear infinite;
+
+  @keyframes loading-animation {
+    0% {
+      transform: scaleX(0);
+    }
+    50% {
+      transform: scaleX(0.5);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+}

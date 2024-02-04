@@ -1,9 +1,12 @@
+import { useState } from "react";
+
 //* MUI components import
 import {
   Box,
   Button,
   ButtonGroup,
   styled,
+  Modal,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -28,7 +31,10 @@ import {
 } from "../data/constants";
 
 //* react router dom
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+//* spinner imports
+import HashLoader from "react-spinners/HashLoader";
 
 //? styled components
 const StyledSubCtn = styled(Box)(({ theme }) => ({
@@ -103,7 +109,7 @@ const StyledCardTitle = styled(Box)(({ theme }) => ({
   color: theme.palette.secondary.main,
   fontSize: FONTSIZE_MEDIUM,
   textDecoration: "none",
-  transition: "color 0.3s ease",
+  transition: "color 0.15s ease",
 
   [theme.breakpoints.down("md")]: {
     fontSize: FONTSIZE_SMALL_MID,
@@ -119,6 +125,24 @@ export default function Dashboard() {
   const theme = useTheme();
   const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
 
+  // ? handling programmatic navigation
+  const navigate = useNavigate();
+
+  //? modal window handling
+  const [modal, setModal] = useState(false);
+
+  //! only for testing, will implement better loading animation later
+  const handleNav = () => {
+    console.log("clicked");
+    setModal(true);
+
+    setTimeout(() => {
+      setModal(false);
+
+      navigate("/forms");
+    }, 1000);
+  };
+
   return (
     <MarginTopBox>
       <BannerBG
@@ -126,7 +150,7 @@ export default function Dashboard() {
           isScreenSmaller ? BANNER_SIZE_DASHBOARD_MD : BANNER_SIZE_DASHBOARD
         }
       >
-        <SubContainer className="something">
+        <SubContainer>
           <StyledSubCtn>
             <CustomH3 fontSize={FONTSIZE_BIGGER} color="white">
               Student Dashboard
@@ -134,10 +158,11 @@ export default function Dashboard() {
 
             {/* //! Using Link component from 'react-router-dom' here */}
             <Box
-              component={Link}
+              // component={Link}
               sx={{ textDecoration: "none", marginTop: 2 }}
-              to="/forms"
+              // to="/forms"
               id="back-to-top-anchor"
+              onClick={handleNav}
             >
               <ContainedButton padding="0.6rem 1rem">
                 Raise Grievance
@@ -191,6 +216,21 @@ export default function Dashboard() {
           </SubContainer>
         ))}
       </Box>
+
+      <Modal
+        open={modal}
+        onClose={() => setModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <HashLoader
+          size={45}
+          aria-label="loading spinner"
+          // color="#ff6500"
+          color="white"
+        />
+      </Modal>
     </MarginTopBox>
   );
 }

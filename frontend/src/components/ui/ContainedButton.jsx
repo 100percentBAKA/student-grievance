@@ -2,8 +2,8 @@ import { Button, styled } from "@mui/material";
 
 import { FONTSIZE_MEDIUM, FONTSIZE_SMALL } from "../../data/constants";
 
-const ContainedButton = ({ children, padding }) => {
-  const CustomButton = styled(Button)(({ theme, padding }) => ({
+const ContainedButton = ({ children, padding, onClick }) => {
+  const CustomButton = styled(Button)(({ theme, padding, onClick }) => ({
     color: theme.palette.common.white,
     borderRadius: "3px",
     textTransform: "none",
