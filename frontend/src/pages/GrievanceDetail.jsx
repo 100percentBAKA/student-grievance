@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 //* MUI components imports
 import { Box } from "@mui/material";
 
-export default function GrievancePortal() {
+export default function GrievanceDetail() {
   const { grievanceID } = useParams();
 
   return (

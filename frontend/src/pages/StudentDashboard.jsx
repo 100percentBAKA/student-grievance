@@ -117,7 +117,7 @@ const StyledCardTitle = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default function Dashboard() {
+export default function StudentDashboard() {
   //? useMediaQuery
   const theme = useTheme();
   const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
@@ -129,15 +129,23 @@ export default function Dashboard() {
   const [modal, setModal] = useState(false);
 
   //! only for testing, will implement better loading animation later
-  const handleNav = () => {
-    console.log("clicked");
+
+  const modelAndDelay = (to, delay = 1000) => {
     setModal(true);
 
     setTimeout(() => {
       setModal(false);
 
-      navigate("/forms");
-    }, 1000);
+      navigate(to);
+    }, delay);
+  };
+
+  const handleNav = () => {
+    modelAndDelay("/forms");
+  };
+
+  const handleTitleClick = (index) => {
+    modelAndDelay(`/grievance/${index + 1}`, 500);
   };
 
   return (
@@ -194,9 +202,14 @@ export default function Dashboard() {
         }}
       >
         {grievanceCardDisplayData.map((data, index) => (
-          <SubContainer>
-            <StyledMainCtn key={index}>
-              <StyledCardTitle component={Link} to={`/grievance/${index + 1}`}>
+          <SubContainer key={index}>
+            <StyledMainCtn>
+              {/* //! The loading animation and delay in loading the grievance/{id} page is intentional
+                  //! This should be removed while handling APIs requests */}
+              <StyledCardTitle
+                // component={Link}
+                onClick={(e) => handleTitleClick(index)}
+              >
                 {data.title}
               </StyledCardTitle>
               <StyledSubCtnMobile>
