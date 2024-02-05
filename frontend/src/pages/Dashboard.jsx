@@ -6,7 +6,6 @@ import {
   Button,
   ButtonGroup,
   styled,
-  Modal,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -17,6 +16,7 @@ import ContainedButton from "../components/ui/ContainedButton";
 import SubContainer from "../components/ui/SubContainer";
 import BannerBG from "../components/ui/BannerBG";
 import MarginTopBox from "../components/ui/MarginTopBox";
+import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
 //* data import
 import grievanceCardDisplayData from "../data/grievanceCardDisplayData";
@@ -32,9 +32,6 @@ import {
 
 //* react router dom
 import { Link, useNavigate } from "react-router-dom";
-
-//* spinner imports
-import HashLoader from "react-spinners/HashLoader";
 
 //? styled components
 const StyledSubCtn = styled(Box)(({ theme }) => ({
@@ -217,20 +214,8 @@ export default function Dashboard() {
         ))}
       </Box>
 
-      <Modal
-        open={modal}
-        onClose={() => setModal(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-        <HashLoader
-          size={45}
-          aria-label="loading spinner"
-          // color="#ff6500"
-          color="white"
-        />
-      </Modal>
+      {/* Modal window with Loader */}
+      <ModalWindowLoader modal={modal} setModal={setModal} />
     </MarginTopBox>
   );
 }
