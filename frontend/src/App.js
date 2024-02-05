@@ -7,8 +7,8 @@ import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 
 //* pages imports 
-import Dashboard from './pages/Dashboard'
-import GrievancePortal from './pages/GrievancePortal'
+import StudentDashboard from './pages/StudentDashboard'
+import GrievanceDetail from './pages/GrievanceDetail'
 import GrievanceForm from './pages/GrievanceForm'
 
 //* react router imports 
@@ -21,8 +21,8 @@ export default function App() {
     <React.Fragment>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/grievance/:grievanceID" element={<GrievancePortal />} />
+        <Route path="/" element={<StudentDashboard />} />
+        <Route path="/grievance/:grievanceID" element={<GrievanceDetail />} />
         <Route path="/forms" element={<GrievanceForm />} />
         <Route path='*' element={<PageNotFound />}></Route>
       </Routes>

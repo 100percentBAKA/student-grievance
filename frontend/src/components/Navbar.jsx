@@ -27,7 +27,6 @@ import {
 
 //* MUI icons imports
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import MailIcon from "@mui/icons-material/Mail";
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -74,11 +73,11 @@ const StyledImg = styled("img")(({ theme }) => ({
   },
 
   [theme.breakpoints.down("md")]: {
-    height: "41px",
+    height: "43px",
   },
 
   [theme.breakpoints.down("sm")]: {
-    height: "31px",
+    height: "36px",
   },
 }));
 
