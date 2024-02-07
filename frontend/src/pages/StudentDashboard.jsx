@@ -141,11 +141,13 @@ export default function StudentDashboard() {
   };
 
   const handleNav = () => {
+    //? parameters: to, delay (default=1000)
     modelAndDelay("/forms");
   };
 
-  const handleTitleClick = (index) => {
-    modelAndDelay(`/grievance/${index + 1}`, 500);
+  const handleTitleClick = (id) => {
+    //? parameters: to, delay
+    modelAndDelay(`/grievance/${id}`, 500);
   };
 
   return (
@@ -202,16 +204,13 @@ export default function StudentDashboard() {
         }}
       >
         {grievanceCardDisplayData.map((data, index) => (
-          <SubContainer key={index}>
+          <SubContainer>
             <StyledMainCtn>
               {/* //! The loading animation and delay in loading the grievance/{id} page is intentional
                   //! This should be removed while handling APIs requests */}
-              <StyledCardTitle
-                // component={Link}
-                onClick={(e) => handleTitleClick(index)}
-              >
-                {data.title}
-              </StyledCardTitle>
+              <Box key={index} onClick={() => handleTitleClick(data.id)}>
+                <StyledCardTitle>{data.title}</StyledCardTitle>
+              </Box>
               <StyledSubCtnMobile>
                 <Box sx={{ display: "flex", columnGap: 1 }}>
                   {data.cat.map((cat, catIndex) => (
