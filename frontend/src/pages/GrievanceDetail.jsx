@@ -14,7 +14,7 @@ import {
   FONTSIZE_SMALL,
   FONTSIZE_SMALL_MID,
 } from "../data/constants";
-import grievanceCardDisplayData from "../data/grievanceCardDisplayData";
+import grievanceData from "../data/grievanceData";
 import grievanceResponses from "../data/grievanceResponses";
 
 //? styled components
@@ -201,7 +201,7 @@ export default function GrievanceDetail() {
 
   //! API HANDLING TO BE DONE HERE
   //? finding grievance with matching ID
-  const grievance = grievanceCardDisplayData.find(
+  const grievance = grievanceData.find(
     (grievance) => grievance.id === parseInt(grievanceID)
   );
 
