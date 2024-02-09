@@ -1,4 +1,4 @@
-const grievanceCardDisplayData = [
+const grievanceData = [
     {
         id: 1,
         title: "Difficulty Finding Recommended Books in the Library for Advanced Quantum Mechanics Course",
@@ -57,4 +57,4 @@ const grievanceCardDisplayData = [
     },
 ];
 
-export default grievanceCardDisplayData;
+export default grievanceData;

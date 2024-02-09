@@ -19,7 +19,7 @@ import MarginTopBox from "../components/ui/MarginTopBox";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
 //* data import
-import grievanceCardDisplayData from "../data/grievanceCardDisplayData";
+import grievanceData from "../data/grievanceData";
 
 import {
   BANNER_SIZE_DASHBOARD,
@@ -203,7 +203,7 @@ export default function StudentDashboard() {
           marginBottom: 5,
         }}
       >
-        {grievanceCardDisplayData.map((data, index) => (
+        {grievanceData.map((data, index) => (
           <SubContainer>
             <StyledMainCtn>
               {/* //! The loading animation and delay in loading the grievance/{id} page is intentional
