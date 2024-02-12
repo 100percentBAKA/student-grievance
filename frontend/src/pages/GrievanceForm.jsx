@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 //* native components imports
 import MarginTopBox from "../components/ui/MarginTopBox";
@@ -10,6 +10,12 @@ import CustomH3 from "../components/ui/CustomH3";
 import {
   Box,
   Button,
+  Checkbox,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
   TextField,
   styled,
   useMediaQuery,
@@ -24,6 +30,7 @@ import {
   FONTSIZE_MEDIUM,
   FONTSIZE_SMALL,
 } from "../data/constants";
+import categories from "../data/grievanceCategories";
 
 //* yup and formik
 import { useFormik } from "formik";
@@ -114,6 +121,10 @@ function FormDisplay() {
       .string()
       .min(50, "Description must be a minimum of 50 characters")
       .required("Description is required"),
+    selectedOption: yup
+      .array()
+      .min(1, "Select a Min of 1 category")
+      .required("Please select an option"),
   });
 
   //? formik form handling
@@ -125,12 +136,15 @@ function FormDisplay() {
       contactInfo: "1n21cs011.adarshgs@gmail.com",
       title: "",
       desc: "",
+      selectedOption: ["Administration"],
     },
     validationSchema: schema,
     onSubmit: (values) => {
       console.log(values);
     },
   });
+
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   return (
     <Box sx={{ my: 5 }}>
@@ -220,6 +234,30 @@ function FormDisplay() {
           error={formik.touched.desc && Boolean(formik.errors.desc)}
           helperText={formik.touched.desc && formik.errors.desc}
         />
+
+        <Select
+          multiple
+          id="selectedOption"
+          value={formik.values.selectedOption}
+          name="selectedOption"
+          onChange={(e) => {
+            formik.handleChange(e);
+            setSelectedOptions(e.target.value);
+          }}
+          renderValue={(selected) => selected.join(", ")}
+          onBlur={formik.handleBlur}
+          error={Boolean(
+            formik.touched.selectedOption && formik.errors.selectedOption
+          )}
+        >
+          {categories.map((cat) => (
+            <MenuItem key={cat.id} value={cat.cat}>
+              <Checkbox checked={selectedOptions.indexOf(cat.cat) > -1} />
+              <ListItemText primary={cat.cat} />
+            </MenuItem>
+          ))}
+        </Select>
+
         <StyledButton
           variant="outlined"
           sx={{ width: "fit-content" }}
