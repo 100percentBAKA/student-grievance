@@ -8,6 +8,10 @@ const SubBox = styled(Box)(({ theme }) => ({
   height: "100%",
   // backgroundColor: "red",
 
+  [theme.breakpoints.down("xl")]: {
+    width: "1000px",
+  },
+
   [theme.breakpoints.down("lg")]: {
     width: "900px",
   },

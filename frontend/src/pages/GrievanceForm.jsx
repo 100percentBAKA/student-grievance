@@ -11,16 +11,17 @@ import {
   Box,
   Button,
   Checkbox,
-  InputLabel,
   ListItemText,
   MenuItem,
-  OutlinedInput,
   Select,
   TextField,
   styled,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+
+//* queries and mutations
+import { useFormQuery, useFormMutation } from "../apis/studentApis";
 
 //* constants imports
 import {
@@ -35,6 +36,7 @@ import categories from "../data/grievanceCategories";
 //* yup and formik
 import { useFormik } from "formik";
 import * as yup from "yup";
+import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
 //? styled components
 const StyledInstructionBox = styled(Box)(({ theme }) => ({
@@ -108,6 +110,12 @@ function BannerDisplay({ viewPort }) {
 }
 
 function FormDisplay() {
+  const mutation = useFormMutation();
+  const isLoad = true;
+
+  //? modal window with loader states
+  const [modal, setModal] = useState(false);
+
   //? schema
   const schema = yup.object().shape({
     fullName: yup.string(),
@@ -136,11 +144,40 @@ function FormDisplay() {
       contactInfo: "1n21cs011.adarshgs@gmail.com",
       title: "",
       desc: "",
-      selectedOption: ["Administration"],
+      selectedOption: ["Academic Issues"],
     },
+
     validationSchema: schema,
+
     onSubmit: (values) => {
-      console.log(values);
+      try {
+        const formData = {
+          title: values.title,
+          askedBy: values.fullName,
+          description: values.desc,
+          student: {
+            usn: values.studentId,
+          },
+          category: {
+            category: [values.selectedOption],
+          },
+        };
+
+        mutation.mutateAsync(formData);
+
+        //? handling loaders
+        if (mutation.isLoading || mutation.isPaused) {
+          setModal(true);
+        }
+
+        //? handling success
+        if (mutation.isSuccess) {
+          setModal(false);
+          console.log("Form submitted successfully !!");
+        }
+      } catch (error) {
+        throw new Error("error on submitting the form", error.message);
+      }
     },
   });
 
@@ -266,6 +303,9 @@ function FormDisplay() {
           Submit
         </StyledButton>
       </StyledForm>
+
+      {/* Modal window with Loader */}
+      <ModalWindowLoader modal={modal} setModal={setModal} />
     </Box>
   );
 }
