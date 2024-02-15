@@ -50,6 +50,10 @@ const StyledAppBarCtn = styled(Box)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "space-between",
 
+  [theme.breakpoints.down("xl")]: {
+    width: "1000px",
+  },
+
   [theme.breakpoints.down("lg")]: {
     width: "900px",
   },
@@ -119,6 +123,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const StyledMenuBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  padding: theme.spacing(3),
+
+  [theme.breakpoints.down("lg")]: {
+    padding: theme.spacing(2),
+  },
+}));
+
 //? custom components
 const listView = [
   {
@@ -151,6 +166,14 @@ const listView = [
     icon: <LogoutIcon />,
   },
 ];
+
+//? menu data
+//! handle this data upon student login
+const menuData = {
+  name: "Adarsh G S",
+  usn: "1RN21CCS011",
+  email: "1rn21cs011.adarshgs@gmail.com",
+};
 
 const ListComponent = ({ closeMenu }) => (
   <List>
@@ -239,45 +262,24 @@ export default function Navbar() {
           ) : (
             <Menu
               anchorEl={anchorElMenu}
-              id="menu-view-navbar"
               open={open}
               onClose={handleProfileClose}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  overflow: "visible",
-                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                  mt: 1.5,
-                  "& .MuiAvatar-root": {
-                    width: 32,
-                    height: 32,
-                    ml: -0.5,
-                    mr: 1,
-                  },
-                  "&::before": {
-                    content: '""',
-                    display: "block",
-                    position: "absolute",
-                    top: 0,
-                    right: 14,
-                    width: 10,
-                    height: 10,
-                    bgcolor: "background.paper",
-                    transform: "translateY(-50%) rotate(45deg)",
-                    zIndex: 0,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem onClose={handleProfileClose}>
-                <Avatar /> Profile
-              </MenuItem>
-              <MenuItem>
-                <Avatar /> My account
-              </MenuItem>
+              <StyledMenuBox>
+                <Box sx={{ marginRight: 2 }}>
+                  <Avatar sx={{ width: 56, height: 56 }} />
+                </Box>
+                <Box>
+                  <Box sx={{ fontSize: "25px", fontWeight: 600 }}>
+                    {menuData.name}
+                  </Box>
+                  <Box sx={{ fontSize: "13px" }}>{menuData.usn}</Box>
+                  <Box sx={{ fontSize: "13px" }}>{menuData.email}</Box>
+                </Box>
+              </StyledMenuBox>
+
               <Divider />
+
               <MenuItem>
                 <ListItemIcon>
                   <Badge badgeContent={noNotif} color="error">

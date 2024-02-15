@@ -130,7 +130,7 @@ export default function StudentDashboard() {
 
   //! only for testing, will implement better loading animation later
 
-  const modelAndDelay = (to, delay = 1000) => {
+  const modelAndDelay = (to, delay = 2000) => {
     setModal(true);
 
     setTimeout(() => {
@@ -147,7 +147,7 @@ export default function StudentDashboard() {
 
   const handleTitleClick = (id) => {
     //? parameters: to, delay
-    modelAndDelay(`/grievance/${id}`, 500);
+    modelAndDelay(`/grievance/${id}`, 1200);
   };
 
   return (
