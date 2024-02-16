@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-//* react router dom imports
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 
 //* native components imports
 import MarginTopBox from "../components/ui/MarginTopBox";
@@ -22,9 +19,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-
-//* queries and mutations
-import { useFormQuery, useFormMutation } from "../apis/studentApis";
 
 //* constants imports
 import {
@@ -85,11 +79,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// const StyledLabel = styled("label")(({ theme }) => ({
-//   fontSize: FONTSIZE_MEDIUM,
-//   fontWeight: 600,
-// }));
-
 function BannerDisplay({ viewPort }) {
   return (
     <BannerBG height={viewPort ? BANNER_SIZE_FORM_MD : BANNER_SIZE_FORM}>
@@ -113,9 +102,6 @@ function BannerDisplay({ viewPort }) {
 }
 
 function FormDisplay() {
-  const navigate = useNavigate();
-  const mutation = useFormMutation();
-
   //? modal window with loader states
   const [modal, setModal] = useState(false);
 
@@ -139,7 +125,7 @@ function FormDisplay() {
   });
 
   //? formik form handling
-  //! inject the values from the session storage / cookies into the initial values of fullname, studentId and contactInfo
+  //! inject the values from the session storage / cookies into the initial values of full name, studentId and contactInfo
   const formik = useFormik({
     initialValues: {
       fullName: "Adarsh G S",
@@ -165,24 +151,10 @@ function FormDisplay() {
         },
       };
       console.log(formData);
-
-      //? sending the post request
-      mutation.mutate(formData);
     },
   });
 
   const [selectedOptions, setSelectedOptions] = useState([]);
-
-  //? handling modal and setModal
-  useEffect(() => {
-    if (mutation.isLoading) {
-      setModal(true);
-    } else if (mutation.isSuccess) {
-      navigate(-1);
-    } else {
-      setModal(false);
-    }
-  }, [mutation.isLoading, mutation.isSuccess, navigate]);
 
   return (
     <Box sx={{ my: 5 }}>
