@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+//* react router dom imports
+import { useNavigate } from "react-router-dom";
 
 //* native components imports
 import MarginTopBox from "../components/ui/MarginTopBox";
@@ -110,8 +113,8 @@ function BannerDisplay({ viewPort }) {
 }
 
 function FormDisplay() {
+  const navigate = useNavigate();
   const mutation = useFormMutation();
-  const isLoad = true;
 
   //? modal window with loader states
   const [modal, setModal] = useState(false);
@@ -150,38 +153,36 @@ function FormDisplay() {
     validationSchema: schema,
 
     onSubmit: (values) => {
-      try {
-        const formData = {
-          title: values.title,
-          askedBy: values.fullName,
-          description: values.desc,
-          student: {
-            usn: values.studentId,
-          },
-          category: {
-            category: [values.selectedOption],
-          },
-        };
+      const formData = {
+        title: values.title,
+        askedBy: values.fullName,
+        description: values.desc,
+        student: {
+          usn: values.studentId,
+        },
+        category: {
+          category: values.selectedOption,
+        },
+      };
+      console.log(formData);
 
-        mutation.mutateAsync(formData);
-
-        //? handling loaders
-        if (mutation.isLoading || mutation.isPaused) {
-          setModal(true);
-        }
-
-        //? handling success
-        if (mutation.isSuccess) {
-          setModal(false);
-          console.log("Form submitted successfully !!");
-        }
-      } catch (error) {
-        throw new Error("error on submitting the form", error.message);
-      }
+      //? sending the post request
+      mutation.mutate(formData);
     },
   });
 
   const [selectedOptions, setSelectedOptions] = useState([]);
+
+  //? handling modal and setModal
+  useEffect(() => {
+    if (mutation.isLoading) {
+      setModal(true);
+    } else if (mutation.isSuccess) {
+      navigate(-1);
+    } else {
+      setModal(false);
+    }
+  }, [mutation.isLoading, mutation.isSuccess, navigate]);
 
   return (
     <Box sx={{ my: 5 }}>

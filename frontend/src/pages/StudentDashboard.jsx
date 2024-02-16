@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //* MUI components import
 import {
@@ -32,6 +32,9 @@ import {
 
 //* react router dom
 import { Link, useNavigate } from "react-router-dom";
+
+//* custom query hook
+import { useGrievancesQuery } from "../apis/studentApis";
 
 //? styled components
 const StyledSubCtn = styled(Box)(({ theme }) => ({
@@ -128,8 +131,18 @@ export default function StudentDashboard() {
   //? modal window handling
   const [modal, setModal] = useState(false);
 
-  //! only for testing, will implement better loading animation later
+  //? fetching grievances from the server
+  // const { data, isLoading, isFetching, isError, error } = useGrievancesQuery();
 
+  // useEffect(() => {
+  //   if (isLoading || isFetching) {
+  //     setModal(true);
+  //   } else {
+  //     setModal(false);
+  //   }
+  // }, [isLoading, isFetching]);
+
+  //! only for testing, will implement better loading animation late
   const modelAndDelay = (to, delay = 2000) => {
     setModal(true);
 
@@ -149,6 +162,14 @@ export default function StudentDashboard() {
     //? parameters: to, delay
     modelAndDelay(`/grievance/${id}`, 1200);
   };
+
+  // if (isLoading || isFetching) {
+  //   return <div>Loading...</div>;
+  // }
+
+  // if (isError) {
+  //   return <div>{error}</div>;
+  // }
 
   return (
     <MarginTopBox>
@@ -217,9 +238,9 @@ export default function StudentDashboard() {
                     <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
                   ))}
                 </Box>
-                <Box sx={{ fontSize: FONTSIZE_SMALL }}>
+                {/* <Box sx={{ fontSize: FONTSIZE_SMALL }}>
                   Asked: {data.time} ago
-                </Box>
+                </Box> */}
               </StyledSubCtnMobile>
             </StyledMainCtn>
           </SubContainer>
