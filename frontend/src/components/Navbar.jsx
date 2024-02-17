@@ -187,9 +187,6 @@ const listView = [
 //   email: "1rn21cs011.adarshgs@gmail.com",
 // };
 
-//? fetching data from local storage
-const menuData = JSON.parse(localStorage.getItem("userDetails"));
-
 const ListComponent = ({ closeMenu }) => (
   <List>
     {listView.map((item) => (
@@ -218,6 +215,12 @@ export default function Navbar() {
   const [noNotif, setNoNotif] = useState(4);
   const [menuBadge, setMenuBadge] = useState(true);
 
+  //? fetching data from local storage
+  const [menuData, setMenuData] = useState(JSON.parse(localStorage.getItem("userDetails")));
+  useEffect(() => {
+    setMenuData(JSON.parse(localStorage.getItem("userDetails")));
+  }, []);
+
   //? handle notification badge, useEffect prevents infinite loop
   useEffect(() => {
     if (noNotif === 0) setMenuBadge(false);
@@ -240,6 +243,8 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
+    console.log("ok");
+    localStorage.clear();
     logout();
     navigate("/login");
   };

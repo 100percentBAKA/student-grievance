@@ -175,9 +175,11 @@ function FormDisplay() {
           student: {
             usn: values.studentId,
           },
-          category: {
-            category: "Academic Issues",
-          },
+          categories: [
+            {
+              category: "Academic Issues",
+            }
+          ],
           elements: [
             {
               orderIndex: 1,
