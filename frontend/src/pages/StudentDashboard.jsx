@@ -30,9 +30,13 @@ import {
 //* react router dom
 import { useNavigate } from "react-router-dom";
 
-//* axios imports 
-import axios from "axios";
+//* custom api hooks imports
 import useFetchData from "../hooks/useFetchData";
+
+//* constants
+//? email will come from the user side
+const email = "1rn21cs011.adarshgs@gmail.com";
+const usn = email.substring(0, 10);
 
 //? styled components
 const StyledSubCtn = styled(Box)(({ theme }) => ({
@@ -123,41 +127,41 @@ export default function StudentDashboard() {
   const theme = useTheme();
   const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
 
+  //? states
+  const [showResolved, setShowResolved] = useState(false);
+  const [showUnResolved, setShowUnResolved] = useState(false);
+
   // ? handling programmatic navigation
   const navigate = useNavigate();
 
   // ? custom fetchData query
-  const {data, modal, setModal, error} =useFetchData(`http://localhost:8080/student/1RN21CS011/grievances`)
+  const { data: loginData, error: loginError } = useFetchData(
+    `http://localhost:8080/user/login/${email}`
+  );
 
-  // //? modal window handling
-  // const [modal, setModal] = useState(false);
+  useEffect(() => {
+    if (loginData) {
+      const details = {
+        ...loginData,
+        usn,
+        email
+      };
+      localStorage.setItem("userDetails", JSON.stringify(details));
+    }
 
-  // //? data handling
-  // const [data, setData] = useState(null);
+    if (loginError) {
+      alert("error saving data into local storage");
+    }
+  }, [loginData, loginError]);
 
-  // useEffect(() => {
-  //   const fetchData = async (usn) => {
-  //     try {
-  //       setModal(true);
-  //       const response = await axios.get(
-  //         `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
-  //       );
-  //       setData(response.data);
-  //     } catch (error) {
-  //       throw new Error("error fetching grievance data");
-  //     } finally {
-  //       setModal(false);
-  //     }
-  //   };
+  // console.log(JSON.parse(localStorage.getItem("userDetails")));
 
-  //   // calling the fetchData function
-  //   //! usn to be taken from local storage
-  //   fetchData("1rn21cs011");
-  // }, []);
+  const { data, modal, setModal, error } = useFetchData(
+    `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
+  );
 
-  console.log(data);
+  // console.log(loginData);
 
-  //! only for testing, will implement better loading animation late
   const modelAndDelay = (to, delay = 2000) => {
     setModal(true);
 
@@ -178,6 +182,50 @@ export default function StudentDashboard() {
     modelAndDelay(`/grievance/${id}`, 1200);
   };
 
+  const handleAllClick = () => {
+    // console.log("all click");
+    setShowResolved(false);
+    setShowUnResolved(false);
+  };
+
+  const handleResBtnClick = () => {
+    // console.log("res click");
+    setShowResolved(true);
+    setShowUnResolved(false);
+  };
+
+  const handleUnResBtnClick = () => {
+    // console.log("un res click");
+    setShowUnResolved(true);
+    setShowResolved(false);
+  };
+
+  const filterGrievances = (grievances) => {
+    if (showResolved) {
+      // console.log("return resolved data");
+      return grievances.filter(
+        (grievance) => grievance.grievanceStatus === "RESOLVED"
+      );
+    } else if (showUnResolved) {
+      // console.log("return unresolved data");
+      return grievances.filter(
+        (grievance) => grievance.grievanceStatus !== "RESOLVED"
+      );
+    } else {
+      return grievances;
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()}`;
+    const formattedTime = `${date.getHours()}:${date.getMinutes()}`;
+
+    return `${formattedDate} ${formattedTime}`;
+  };
+
   return (
     <MarginTopBox>
       <BannerBG
@@ -190,8 +238,6 @@ export default function StudentDashboard() {
             <CustomH3 fontSize={FONTSIZE_BIGGER} color="white">
               Student Dashboard
             </CustomH3>
-
-            {/* //! Using Link component from 'react-router-dom' here */}
             <Box
               sx={{ textDecoration: "none", marginTop: 2 }}
               id="back-to-top-anchor"
@@ -216,9 +262,9 @@ export default function StudentDashboard() {
           fontSize: FONTSIZE_MEDIUM,
         }}
       >
-        {["All", "Resolved", "Unresolved"].map((buttonText) => (
-          <StyledBtn>{buttonText}</StyledBtn>
-        ))}
+        <StyledBtn onClick={handleAllClick}>All</StyledBtn>
+        <StyledBtn onClick={handleResBtnClick}>Resolved</StyledBtn>
+        <StyledBtn onClick={handleUnResBtnClick}>Unresolved</StyledBtn>
       </StyledBtnGrp>
 
       <Box
@@ -229,12 +275,10 @@ export default function StudentDashboard() {
           marginBottom: 5,
         }}
       >
-        {data ? (
-          data.map((raw, index) => (
-            <SubContainer>
+        {filterGrievances(data) ? (
+          filterGrievances(data).map((raw, index) => (
+            <SubContainer key={index}>
               <StyledMainCtn>
-                {/* //! The loading animation and delay in loading the grievance/{id} page is intentional
-                  //! This should be removed while handling APIs requests */}
                 <Box key={index} onClick={() => handleTitleClick(raw.id)}>
                   <StyledCardTitle>{raw.title}</StyledCardTitle>
                 </Box>
@@ -245,7 +289,7 @@ export default function StudentDashboard() {
                   {/*  ))}*/}
                   {/*</Box>*/}
                   <Box sx={{ fontSize: FONTSIZE_SMALL }}>
-                    Asked: {raw.asked} ago
+                    Asked: {formatDate(raw.asked)}
                   </Box>
                 </StyledSubCtnMobile>
               </StyledMainCtn>

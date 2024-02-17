@@ -86,6 +86,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const debug = false;
+const storageData = JSON.parse(localStorage.getItem("userDetails"));
+
+// console.log(storageData);
 
 function BannerDisplay({ viewPort }) {
   return (
@@ -139,9 +142,9 @@ function FormDisplay() {
   //! inject the values from the session storage / cookies into the initial values of full name, studentId and contactInfo
   const formik = useFormik({
     initialValues: {
-      fullName: "Adarsh G S",
-      studentId: "1RN21CS011",
-      contactInfo: "1n21cs011.adarshgs@gmail.com",
+      fullName: `${storageData.firstname} ${storageData.lastname}`,
+      studentId: storageData.usn,
+      contactInfo: storageData.email,
       title: "",
       desc: "",
       selectedOption: ["Academic Issues"],
