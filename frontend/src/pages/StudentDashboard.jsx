@@ -129,13 +129,13 @@ export default function StudentDashboard() {
   // ? handling programmatic navigation
   const navigate = useNavigate();
 
-  // const usn = JSON.parse(localStorage.getItem("userDetails")).usn;
-  const usn = "1rn21cs011";
+  const usn = JSON.parse(localStorage.getItem("userDetails")).usn;
+  console.log(usn);
+  // const usn = "1rn21cs011";
   const { data, modal, setModal, error } = useFetchData(
     `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
   );
-
-  // console.log(loginData);
+  console.log(`http://localhost:8080/student/${usn.toUpperCase()}/grievances`);
 
   const modelAndDelay = (to, delay = 2000) => {
     setModal(true);

@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 //* images imports
 import rnsLogo from "../assets/rnsit-logo.jpg";
 
@@ -30,8 +32,12 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useEffect, useState } from "react";
-import useFetchData from "../hooks/useFetchData";
+
+//* rrd imports
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+
+// import useFetchData from "../hooks/useFetchData";
 
 //? styled components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -170,16 +176,19 @@ const listView = [
 
 //* constants
 //? email will come from the user side
-const email = "1rn21cs011.adarshgs@gmail.com";
-const usn = email.substring(0, 10);
+// const email = "1rn21cs011.adarshgs@gmail.com";
+// const usn = email.substring(0, 10);
 
 //? menu data
 //! handle this data upon student login
-const menuData = {
-  name: "Adarsh G S",
-  usn: "1RN21CCS011",
-  email: "1rn21cs011.adarshgs@gmail.com",
-};
+// const menuData = {
+//   name: "Adarsh G S",
+//   usn: "1RN21CCS011",
+//   email: "1rn21cs011.adarshgs@gmail.com",
+// };
+
+//? fetching data from local storage
+const menuData = JSON.parse(localStorage.getItem("userDetails"));
 
 const ListComponent = ({ closeMenu }) => (
   <List>
@@ -195,6 +204,12 @@ const ListComponent = ({ closeMenu }) => (
 );
 
 export default function Navbar() {
+  //? use navigate
+  const navigate = useNavigate();
+
+  //? use auth
+  const { logout } = useAuth();
+
   //? states for menu and drawer
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -202,24 +217,6 @@ export default function Navbar() {
   //? states for handling notification and menu badge no
   const [noNotif, setNoNotif] = useState(4);
   const [menuBadge, setMenuBadge] = useState(true);
-
-  // ? custom fetchData query
-  // const { data: loginData, error: loginError } = useFetchData(
-  //   `http://localhost:8080/user/login/${email}`
-  // );
-
-  // useEffect(() => {
-  //   if (loginData) {
-  //     const details = {
-  //       ...loginData,
-  //       usn,
-  //       email,
-  //     };
-  //     localStorage.setItem("userDetails", JSON.stringify(details));
-  //   }
-  // }, [loginData, loginError]);
-
-  // const menuData = JSON.parse(localStorage.getItem("userDetails"));
 
   //? handle notification badge, useEffect prevents infinite loop
   useEffect(() => {
@@ -231,13 +228,20 @@ export default function Navbar() {
   const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
 
   const open = Boolean(anchorElMenu);
+
   const handleProfileClick = (event) => {
     setAnchorElMenu(event.currentTarget);
     setShowDrawer(true);
     setMenuBadge(false);
   };
+
   const handleProfileClose = () => {
     setAnchorElMenu(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
   return (
@@ -320,7 +324,7 @@ export default function Navbar() {
                 </ListItemIcon>
                 Settings
               </MenuItem>
-              <MenuItem>
+              <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <LogoutIcon fontSize="small" />
                 </ListItemIcon>

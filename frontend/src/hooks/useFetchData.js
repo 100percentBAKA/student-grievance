@@ -24,7 +24,6 @@ const useFetchData = (url) => {
         }
 
         fetchData()
-
     }, [url])
 
     return { data, setData, modal, setModal, error, setError }

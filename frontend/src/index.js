@@ -13,6 +13,9 @@ import { BrowserRouter } from 'react-router-dom';
 //* MUI components imports 
 import { ThemeProvider } from "@emotion/react"
 
+// * Auth context provider
+import { AuthProvider } from "./hooks/useAuth"
+
 // * query client 
 const queryClient = new QueryClient()
 
@@ -22,7 +25,9 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>

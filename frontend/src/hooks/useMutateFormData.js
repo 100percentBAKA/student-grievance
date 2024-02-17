@@ -1,7 +1,7 @@
 import { useMutation } from "react-query"
 import axios from "axios";
 
-export default function useMutateData() {
+export default function useMutateFormData() {
     return useMutation(
         (data) => axios.post("http://localhost:8080/grievance", data),
         {

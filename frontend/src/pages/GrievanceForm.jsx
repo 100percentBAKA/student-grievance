@@ -39,7 +39,7 @@ import * as yup from "yup";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
 //* custom api hook imports
-import useMutateData from "../hooks/useMutateData";
+import useMutateFormData from "../hooks/useMutateFormData";
 
 //? styled components
 const StyledInstructionBox = styled(Box)(({ theme }) => ({
@@ -86,7 +86,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const debug = false;
-// const storageData = JSON.parse(localStorage.getItem("userDetails"));
+const storageData = JSON.parse(localStorage.getItem("userDetails"));
 // console.log(storageData);
 
 function BannerDisplay({ viewPort }) {
@@ -112,7 +112,7 @@ function BannerDisplay({ viewPort }) {
 }
 
 function FormDisplay() {
-  const mutation = useMutateData();
+  const mutation = useMutateFormData();
   const navigate = useNavigate();
 
   //? modal window with loader states
@@ -137,26 +137,31 @@ function FormDisplay() {
       .required("Please select an option"),
   });
 
+  // ? initial values
+  const fullName = `${storageData.firstname} ${storageData.lastname}`;
+  const usn = storageData.usn.toUpperCase();
+  const email = storageData.email;
+
   //? formik form handling
   //! inject the values from the session storage / cookies into the initial values of full name, studentId and contactInfo
   const formik = useFormik({
-    // initialValues: {
-    //   fullName: `${storageData.firstname} ${storageData.lastname}`,
-    //   studentId: storageData.usn,
-    //   contactInfo: storageData.email,
-    //   title: "",
-    //   desc: "",
-    //   selectedOption: ["Academic Issues"],
-    // },
-
     initialValues: {
-      fullName: "Adarsh G S",
-      studentId: "1RN21CS011",
-      contactInfo: "1rn21cs011.adarshgs@gmail.com",
+      fullName: fullName,
+      studentId: usn,
+      contactInfo: email,
       title: "",
       desc: "",
       selectedOption: ["Academic Issues"],
     },
+
+    // initialValues: {
+    //   fullName: "Adarsh G S",
+    //   studentId: "1RN21CS011",
+    //   contactInfo: "1rn21cs011.adarshgs@gmail.com",
+    //   title: "",
+    //   desc: "",
+    //   selectedOption: ["Academic Issues"],
+    // },
 
     validationSchema: schema,
 
@@ -171,7 +176,7 @@ function FormDisplay() {
             usn: values.studentId,
           },
           category: {
-            category: "Class",
+            category: "Academic Issues",
           },
           elements: [
             {
@@ -180,6 +185,7 @@ function FormDisplay() {
             },
           ],
         };
+        console.log(formData);
         const response = await mutation.mutateAsync(formData);
         console.log(response);
       } catch (error) {
