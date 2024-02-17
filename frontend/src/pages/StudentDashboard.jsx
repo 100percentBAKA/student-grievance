@@ -134,33 +134,9 @@ export default function StudentDashboard() {
   // ? handling programmatic navigation
   const navigate = useNavigate();
 
-  // ? custom fetchData query
-  const { data: loginData, error: loginError } = useFetchData(
-    `http://localhost:8080/user/login/${email}`
-  );
-
-  useEffect(() => {
-    if (loginData) {
-      const details = {
-        ...loginData,
-        usn,
-        email
-      };
-      localStorage.setItem("userDetails", JSON.stringify(details));
-    }
-
-    if (loginError) {
-      alert("error saving data into local storage");
-    }
-  }, [loginData, loginError]);
-
-  // console.log(JSON.parse(localStorage.getItem("userDetails")));
-
   const { data, modal, setModal, error } = useFetchData(
     `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
   );
-
-  // console.log(loginData);
 
   const modelAndDelay = (to, delay = 2000) => {
     setModal(true);
@@ -183,31 +159,26 @@ export default function StudentDashboard() {
   };
 
   const handleAllClick = () => {
-    // console.log("all click");
     setShowResolved(false);
     setShowUnResolved(false);
   };
 
   const handleResBtnClick = () => {
-    // console.log("res click");
     setShowResolved(true);
     setShowUnResolved(false);
   };
 
   const handleUnResBtnClick = () => {
-    // console.log("un res click");
     setShowUnResolved(true);
     setShowResolved(false);
   };
 
   const filterGrievances = (grievances) => {
     if (showResolved) {
-      // console.log("return resolved data");
       return grievances.filter(
         (grievance) => grievance.grievanceStatus === "RESOLVED"
       );
     } else if (showUnResolved) {
-      // console.log("return unresolved data");
       return grievances.filter(
         (grievance) => grievance.grievanceStatus !== "RESOLVED"
       );

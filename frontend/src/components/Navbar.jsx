@@ -169,15 +169,12 @@ const listView = [
 
 //? menu data
 //! handle this data upon student login
-// const menuData = {
-//   name: "Adarsh G S",
-//   usn: "1RN21CCS011",
-//   email: "1rn21cs011.adarshgs@gmail.com",
-// };
-
-const menuData = JSON.parse(localStorage.getItem("userDetails"));
-
-// console.log(menuData);
+const menuData = {
+  firstname: "Adarsh",
+  lastname: "G S",
+  usn: "1RN21CCS011",
+  email: "1rn21cs011.adarshgs@gmail.com",
+};
 
 const ListComponent = ({ closeMenu }) => (
   <List>
