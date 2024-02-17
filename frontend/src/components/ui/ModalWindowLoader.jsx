@@ -17,14 +17,14 @@ export default function ModalWindowLoader({ modal, setModal }) {
         alignItems: "center",
       }}
     >
-      <Box>
+      <>
         <HashLoader
           size={45}
           aria-label="loading spinner"
           // color="#ff6500"
           color="white"
         />
-      </Box>
+      </>
     </Modal>
   );
 }
