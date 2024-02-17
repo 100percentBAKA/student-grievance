@@ -18,9 +18,6 @@ import BannerBG from "../components/ui/BannerBG";
 import MarginTopBox from "../components/ui/MarginTopBox";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
-//* data import
-import grievanceData from "../data/grievanceData";
-
 import {
   BANNER_SIZE_DASHBOARD,
   BANNER_SIZE_DASHBOARD_MD,
@@ -31,10 +28,11 @@ import {
 } from "../data/constants";
 
 //* react router dom
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-//* custom query hook
-import { useGrievancesQuery } from "../apis/studentApis";
+//* axios imports 
+import axios from "axios";
+import useFetchData from "../hooks/useFetchData";
 
 //? styled components
 const StyledSubCtn = styled(Box)(({ theme }) => ({
@@ -128,19 +126,36 @@ export default function StudentDashboard() {
   // ? handling programmatic navigation
   const navigate = useNavigate();
 
-  //? modal window handling
-  const [modal, setModal] = useState(false);
+  // ? custom fetchData query
+  const {data, modal, setModal, error} =useFetchData(`http://localhost:8080/student/1RN21CS011/grievances`)
 
-  //? fetching grievances from the server
-  // const { data, isLoading, isFetching, isError, error } = useGrievancesQuery();
+  // //? modal window handling
+  // const [modal, setModal] = useState(false);
+
+  // //? data handling
+  // const [data, setData] = useState(null);
 
   // useEffect(() => {
-  //   if (isLoading || isFetching) {
-  //     setModal(true);
-  //   } else {
-  //     setModal(false);
-  //   }
-  // }, [isLoading, isFetching]);
+  //   const fetchData = async (usn) => {
+  //     try {
+  //       setModal(true);
+  //       const response = await axios.get(
+  //         `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
+  //       );
+  //       setData(response.data);
+  //     } catch (error) {
+  //       throw new Error("error fetching grievance data");
+  //     } finally {
+  //       setModal(false);
+  //     }
+  //   };
+
+  //   // calling the fetchData function
+  //   //! usn to be taken from local storage
+  //   fetchData("1rn21cs011");
+  // }, []);
+
+  console.log(data);
 
   //! only for testing, will implement better loading animation late
   const modelAndDelay = (to, delay = 2000) => {
@@ -163,14 +178,6 @@ export default function StudentDashboard() {
     modelAndDelay(`/grievance/${id}`, 1200);
   };
 
-  // if (isLoading || isFetching) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (isError) {
-  //   return <div>{error}</div>;
-  // }
-
   return (
     <MarginTopBox>
       <BannerBG
@@ -186,9 +193,7 @@ export default function StudentDashboard() {
 
             {/* //! Using Link component from 'react-router-dom' here */}
             <Box
-              // component={Link}
               sx={{ textDecoration: "none", marginTop: 2 }}
-              // to="/forms"
               id="back-to-top-anchor"
               onClick={handleNav}
             >
@@ -224,27 +229,33 @@ export default function StudentDashboard() {
           marginBottom: 5,
         }}
       >
-        {grievanceData.map((data, index) => (
-          <SubContainer>
-            <StyledMainCtn>
-              {/* //! The loading animation and delay in loading the grievance/{id} page is intentional
+        {data ? (
+          data.map((raw, index) => (
+            <SubContainer>
+              <StyledMainCtn>
+                {/* //! The loading animation and delay in loading the grievance/{id} page is intentional
                   //! This should be removed while handling APIs requests */}
-              <Box key={index} onClick={() => handleTitleClick(data.id)}>
-                <StyledCardTitle>{data.title}</StyledCardTitle>
-              </Box>
-              <StyledSubCtnMobile>
-                <Box sx={{ display: "flex", columnGap: 1 }}>
-                  {data.cat.map((cat, catIndex) => (
-                    <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
-                  ))}
+                <Box key={index} onClick={() => handleTitleClick(raw.id)}>
+                  <StyledCardTitle>{raw.title}</StyledCardTitle>
                 </Box>
-                {/* <Box sx={{ fontSize: FONTSIZE_SMALL }}>
-                  Asked: {data.time} ago
-                </Box> */}
-              </StyledSubCtnMobile>
-            </StyledMainCtn>
-          </SubContainer>
-        ))}
+                <StyledSubCtnMobile>
+                  {/*<Box sx={{ display: "flex", columnGap: 1 }}>*/}
+                  {/*  {data.cat.map((cat, catIndex) => (*/}
+                  {/*      <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>*/}
+                  {/*  ))}*/}
+                  {/*</Box>*/}
+                  <Box sx={{ fontSize: FONTSIZE_SMALL }}>
+                    Asked: {raw.asked} ago
+                  </Box>
+                </StyledSubCtnMobile>
+              </StyledMainCtn>
+            </SubContainer>
+          ))
+        ) : (
+          <Box sx={{ textAlign: "center" }}>
+            <CustomH3>No grievance Data to Display</CustomH3>
+          </Box>
+        )}
       </Box>
 
       {/* Modal window with Loader */}

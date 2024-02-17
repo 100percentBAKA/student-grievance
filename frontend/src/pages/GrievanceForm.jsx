@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 //* native components imports
 import MarginTopBox from "../components/ui/MarginTopBox";
 import BannerBG from "../components/ui/BannerBG";
 import SubContainer from "../components/ui/SubContainer";
 import CustomH3 from "../components/ui/CustomH3";
+
+//* react router dom
+import { useNavigate } from "react-router-dom";
 
 //* MUI components imports
 import {
@@ -34,6 +37,9 @@ import categories from "../data/grievanceCategories";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
+
+//* custom api hook imports
+import useMutateData from "../hooks/useMutateData";
 
 //? styled components
 const StyledInstructionBox = styled(Box)(({ theme }) => ({
@@ -79,6 +85,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const debug = false;
+
 function BannerDisplay({ viewPort }) {
   return (
     <BannerBG height={viewPort ? BANNER_SIZE_FORM_MD : BANNER_SIZE_FORM}>
@@ -102,6 +110,9 @@ function BannerDisplay({ viewPort }) {
 }
 
 function FormDisplay() {
+  const mutation = useMutateData();
+  const navigate = useNavigate();
+
   //? modal window with loader states
   const [modal, setModal] = useState(false);
 
@@ -138,21 +149,41 @@ function FormDisplay() {
 
     validationSchema: schema,
 
-    onSubmit: (values) => {
-      const formData = {
-        title: values.title,
-        askedBy: values.fullName,
-        description: values.desc,
-        student: {
-          usn: values.studentId,
-        },
-        category: {
-          category: values.selectedOption,
-        },
-      };
-      console.log(formData);
+    onSubmit: async (values) => {
+      setModal(true);
+
+      try {
+        const formData = {
+          title: values.title,
+          askedBy: values.fullName,
+          student: {
+            usn: values.studentId,
+          },
+          category: {
+            category: values.selectedOption[0],
+          },
+          elements: [
+            {
+              orderIndex: 1,
+              description: values.desc,
+            },
+          ],
+        };
+        const response = await mutation.mutateAsync(formData);
+        console.log(response);
+      } catch (error) {
+        throw new Error("Error while submitting the form");
+      } finally {
+        setModal(false);
+      }
     },
   });
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      navigate(-1);
+    }
+  }, [mutation.isSuccess, navigate]);
 
   const [selectedOptions, setSelectedOptions] = useState([]);
 

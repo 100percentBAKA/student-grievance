@@ -22,3 +22,5 @@
 
 #ignore .env files 
 /backend/db_config.env
+
+.idea
