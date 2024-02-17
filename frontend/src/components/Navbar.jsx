@@ -169,11 +169,15 @@ const listView = [
 
 //? menu data
 //! handle this data upon student login
-const menuData = {
-  name: "Adarsh G S",
-  usn: "1RN21CCS011",
-  email: "1rn21cs011.adarshgs@gmail.com",
-};
+// const menuData = {
+//   name: "Adarsh G S",
+//   usn: "1RN21CCS011",
+//   email: "1rn21cs011.adarshgs@gmail.com",
+// };
+
+const menuData = JSON.parse(localStorage.getItem("userDetails"));
+
+// console.log(menuData);
 
 const ListComponent = ({ closeMenu }) => (
   <List>
@@ -271,7 +275,7 @@ export default function Navbar() {
                 </Box>
                 <Box>
                   <Box sx={{ fontSize: "25px", fontWeight: 600 }}>
-                    {menuData.name}
+                    {`${menuData.firstname} ${menuData.lastname}`}
                   </Box>
                   <Box sx={{ fontSize: "13px" }}>{menuData.usn}</Box>
                   <Box sx={{ fontSize: "13px" }}>{menuData.email}</Box>
