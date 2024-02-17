@@ -36,22 +36,17 @@ import LogoutIcon from "@mui/icons-material/Logout";
 //* rrd imports
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-
-// import useFetchData from "../hooks/useFetchData";
+import ModalWindowLoader from "./ui/ModalWindowLoader";
 
 //? styled components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.common.white,
-  // backgroundColor: "green",
 }));
 
 const StyledAppBarCtn = styled(Box)(({ theme }) => ({
-  width: "1200px", // desktop first approach
+  width: "1200px",
   margin: "auto",
-  // backgroundColor: "red",
-
   padding: theme.spacing(1),
-
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
@@ -174,15 +169,11 @@ const listView = [
   },
 ];
 
-//* constants
-//? email will come from the user side
-// const email = "1rn21cs011.adarshgs@gmail.com";
-// const usn = email.substring(0, 10);
-
 //? menu data
 //! handle this data upon student login
 // const menuData = {
-//   name: "Adarsh G S",
+//   firstname: "Adarsh",
+//   lastname: "G S",
 //   usn: "1RN21CCS011",
 //   email: "1rn21cs011.adarshgs@gmail.com",
 // };
@@ -201,22 +192,24 @@ const ListComponent = ({ closeMenu }) => (
 );
 
 export default function Navbar() {
-  //? use navigate
   const navigate = useNavigate();
 
-  //? use auth
+  //? use auth form auth context provider
   const { logout } = useAuth();
 
   //? states for menu and drawer
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
 
-  //? states for handling notification and menu badge no
+  //? states for handling notification and menu badge no and modal
   const [noNotif, setNoNotif] = useState(4);
   const [menuBadge, setMenuBadge] = useState(true);
+  const [modal, setModal] = useState(false);
 
   //? fetching data from local storage
-  const [menuData, setMenuData] = useState(JSON.parse(localStorage.getItem("userDetails")));
+  const [menuData, setMenuData] = useState(
+    JSON.parse(localStorage.getItem("userDetails"))
+  );
   useEffect(() => {
     setMenuData(JSON.parse(localStorage.getItem("userDetails")));
   }, []);
@@ -226,7 +219,7 @@ export default function Navbar() {
     if (noNotif === 0) setMenuBadge(false);
   }, [noNotif]);
 
-  //? useMediaQuery
+  //? useMediaQuery for obtaining current view port size
   const theme = useTheme();
   const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -243,10 +236,20 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    console.log("ok");
-    localStorage.clear();
-    logout();
-    navigate("/login");
+    setModal(true);
+
+    //? delay for animation
+    setTimeout(() => {
+      //? clear all data when logout
+      localStorage.clear();
+
+      //? global logout state
+      logout();
+      setModal(false);
+
+      //? navigate back to login screen
+      navigate("/login");
+    }, 700);
   };
 
   return (
@@ -339,6 +342,9 @@ export default function Navbar() {
           )}
         </Box>
       </StyledAppBarCtn>
+
+      {/* Modal window with hashloader */}
+      <ModalWindowLoader modal={modal} setModal={setModal} />
     </StyledAppBar>
   );
 }

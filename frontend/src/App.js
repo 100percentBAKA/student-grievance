@@ -20,9 +20,7 @@ import LoginPage from './pages/LoginPage'
 import { useAuth } from "./hooks/useAuth"
 
 export default function App() {
-
   const { isAuthenticated } = useAuth()
-
   const PrivateRoute = () => {
     return (
       !isAuthenticated ? <Navigate to="/login" /> : <Outlet />

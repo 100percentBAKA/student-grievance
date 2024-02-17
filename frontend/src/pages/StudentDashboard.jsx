@@ -130,19 +130,14 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
 
   const usn = JSON.parse(localStorage.getItem("userDetails")).usn;
-  console.log(usn);
-  // const usn = "1rn21cs011";
   const { data, modal, setModal, error } = useFetchData(
     `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
   );
-  console.log(`http://localhost:8080/student/${usn.toUpperCase()}/grievances`);
 
   const modelAndDelay = (to, delay = 2000) => {
     setModal(true);
-
     setTimeout(() => {
       setModal(false);
-
       navigate(to);
     }, delay);
   };
@@ -158,31 +153,26 @@ export default function StudentDashboard() {
   };
 
   const handleAllClick = () => {
-    // console.log("all click");
     setShowResolved(false);
     setShowUnResolved(false);
   };
 
   const handleResBtnClick = () => {
-    // console.log("res click");
     setShowResolved(true);
     setShowUnResolved(false);
   };
 
   const handleUnResBtnClick = () => {
-    // console.log("un res click");
     setShowUnResolved(true);
     setShowResolved(false);
   };
 
   const filterGrievances = (grievances) => {
     if (showResolved) {
-      // console.log("return resolved data");
       return grievances.filter(
         (grievance) => grievance.grievanceStatus === "RESOLVED"
       );
     } else if (showUnResolved) {
-      // console.log("return unresolved data");
       return grievances.filter(
         (grievance) => grievance.grievanceStatus !== "RESOLVED"
       );
@@ -258,11 +248,11 @@ export default function StudentDashboard() {
                   <StyledCardTitle>{raw.title}</StyledCardTitle>
                 </Box>
                 <StyledSubCtnMobile>
-                  {/*<Box sx={{ display: "flex", columnGap: 1 }}>*/}
-                  {/*  {data.cat.map((cat, catIndex) => (*/}
-                  {/*      <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>*/}
-                  {/*  ))}*/}
-                  {/*</Box>*/}
+                  {/* <Box sx={{ display: "flex", columnGap: 1 }}>
+                    {data.cat.map((cat, catIndex) => (
+                      <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
+                    ))}
+                  </Box> */}
                   <Box sx={{ fontSize: FONTSIZE_SMALL }}>
                     Asked: {formatDate(raw.asked)}
                   </Box>

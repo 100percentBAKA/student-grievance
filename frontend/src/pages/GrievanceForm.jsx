@@ -41,6 +41,9 @@ import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 //* custom api hook imports
 import useMutateFormData from "../hooks/useMutateFormData";
 
+//! debug constant
+const DEBUG = false;
+
 //? styled components
 const StyledInstructionBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -85,10 +88,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const debug = false;
-const storageData = JSON.parse(localStorage.getItem("userDetails"));
-// console.log(storageData);
-
 function BannerDisplay({ viewPort }) {
   return (
     <BannerBG height={viewPort ? BANNER_SIZE_FORM_MD : BANNER_SIZE_FORM}>
@@ -118,6 +117,14 @@ function FormDisplay() {
   //? modal window with loader states
   const [modal, setModal] = useState(false);
 
+  //? state to manage initial values
+  const [initialValues, setInitialValues] = useState(
+    JSON.parse(localStorage.getItem("userDetails"))
+  );
+  useEffect(() => {
+    setInitialValues(JSON.parse(localStorage.getItem("userDetails")));
+  }, []);
+
   //? schema
   const schema = yup.object().shape({
     fullName: yup.string(),
@@ -137,32 +144,16 @@ function FormDisplay() {
       .required("Please select an option"),
   });
 
-  // ? initial values
-  const fullName = `${storageData.firstname} ${storageData.lastname}`;
-  const usn = storageData.usn.toUpperCase();
-  const email = storageData.email;
-
   //? formik form handling
-  //! inject the values from the session storage / cookies into the initial values of full name, studentId and contactInfo
   const formik = useFormik({
     initialValues: {
-      fullName: fullName,
-      studentId: usn,
-      contactInfo: email,
+      fullName: `${initialValues.firstname} ${initialValues.lastname}`,
+      studentId: initialValues.usn.toUpperCase(),
+      contactInfo: initialValues.email,
       title: "",
       desc: "",
       selectedOption: ["Academic Issues"],
     },
-
-    // initialValues: {
-    //   fullName: "Adarsh G S",
-    //   studentId: "1RN21CS011",
-    //   contactInfo: "1rn21cs011.adarshgs@gmail.com",
-    //   title: "",
-    //   desc: "",
-    //   selectedOption: ["Academic Issues"],
-    // },
-
     validationSchema: schema,
 
     onSubmit: async (values) => {
@@ -178,7 +169,7 @@ function FormDisplay() {
           categories: [
             {
               category: "Academic Issues",
-            }
+            },
           ],
           elements: [
             {
@@ -187,9 +178,9 @@ function FormDisplay() {
             },
           ],
         };
-        console.log(formData);
+        DEBUG && console.log(formData);
         const response = await mutation.mutateAsync(formData);
-        console.log(response);
+        DEBUG && console.log(response);
       } catch (error) {
         throw new Error("Error while submitting the form");
       } finally {
@@ -215,8 +206,6 @@ function FormDisplay() {
       </Box>
 
       <StyledForm onSubmit={formik.handleSubmit}>
-        {/* <StyledLabel htmlFor="title">Title</StyledLabel> */}
-
         <TextField
           id="fullName"
           name="fullName"
@@ -278,7 +267,6 @@ function FormDisplay() {
           helperText={formik.touched.title && formik.errors.title}
         />
 
-        {/* <StyledLabel htmlFor="desc">Description</StyledLabel> */}
         <TextField
           id="desc"
           name="desc"

@@ -37,13 +37,11 @@ const LOGIN_SCHEMA = yup.object().shape({
 });
 
 const LoginPage = () => {
-  //? use navigate
   const navigate = useNavigate();
 
-  //? use auth
+  //? use auth from auth context
   const { login } = useAuth();
 
-  //? states
   const [modal, setModal] = useState(null);
   const [error, setError] = useState(null);
 
@@ -59,9 +57,6 @@ const LoginPage = () => {
     onSubmit: async () => {
       const email = formik.values.email;
       const password = formik.values.password;
-
-      // console.log(email, password);
-
       setModal(true);
       try {
         const basicAuthHeader = "Basic " + btoa(email + ":" + password);
@@ -77,7 +72,6 @@ const LoginPage = () => {
 
         //? store the btoa generated token only after successful request
         localStorage.setItem("auth", JSON.stringify(basicAuthHeader));
-        // console.log(`basic auth header stores in local storage successfully`);
 
         const usn = email.substring(0, 10);
         const updatedData = {
@@ -89,9 +83,7 @@ const LoginPage = () => {
 
         //? set isAuthenticated to true
         login();
-
         navigate("/");
-        // console.log(JSON.parse(localStorage.getItem("userDetails")));
       } catch (error) {
         setError(error);
       } finally {
