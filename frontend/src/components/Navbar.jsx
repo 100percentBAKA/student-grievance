@@ -175,11 +175,11 @@ const usn = email.substring(0, 10);
 
 //? menu data
 //! handle this data upon student login
-// const menuData = {
-//   name: "Adarsh G S",
-//   usn: "1RN21CCS011",
-//   email: "1rn21cs011.adarshgs@gmail.com",
-// };
+const menuData = {
+  name: "Adarsh G S",
+  usn: "1RN21CCS011",
+  email: "1rn21cs011.adarshgs@gmail.com",
+};
 
 const ListComponent = ({ closeMenu }) => (
   <List>
@@ -204,22 +204,22 @@ export default function Navbar() {
   const [menuBadge, setMenuBadge] = useState(true);
 
   // ? custom fetchData query
-  const { data: loginData, error: loginError } = useFetchData(
-    `http://localhost:8080/user/login/${email}`
-  );
+  // const { data: loginData, error: loginError } = useFetchData(
+  //   `http://localhost:8080/user/login/${email}`
+  // );
 
-  useEffect(() => {
-    if (loginData) {
-      const details = {
-        ...loginData,
-        usn,
-        email,
-      };
-      localStorage.setItem("userDetails", JSON.stringify(details));
-    }
-  }, [loginData, loginError]);
+  // useEffect(() => {
+  //   if (loginData) {
+  //     const details = {
+  //       ...loginData,
+  //       usn,
+  //       email,
+  //     };
+  //     localStorage.setItem("userDetails", JSON.stringify(details));
+  //   }
+  // }, [loginData, loginError]);
 
-  const menuData = JSON.parse(localStorage.getItem("userDetails"));
+  // const menuData = JSON.parse(localStorage.getItem("userDetails"));
 
   //? handle notification badge, useEffect prevents infinite loop
   useEffect(() => {

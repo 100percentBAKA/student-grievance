@@ -86,8 +86,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const debug = false;
-const storageData = JSON.parse(localStorage.getItem("userDetails"));
-
+// const storageData = JSON.parse(localStorage.getItem("userDetails"));
 // console.log(storageData);
 
 function BannerDisplay({ viewPort }) {
@@ -141,10 +140,19 @@ function FormDisplay() {
   //? formik form handling
   //! inject the values from the session storage / cookies into the initial values of full name, studentId and contactInfo
   const formik = useFormik({
+    // initialValues: {
+    //   fullName: `${storageData.firstname} ${storageData.lastname}`,
+    //   studentId: storageData.usn,
+    //   contactInfo: storageData.email,
+    //   title: "",
+    //   desc: "",
+    //   selectedOption: ["Academic Issues"],
+    // },
+
     initialValues: {
-      fullName: `${storageData.firstname} ${storageData.lastname}`,
-      studentId: storageData.usn,
-      contactInfo: storageData.email,
+      fullName: "Adarsh G S",
+      studentId: "1RN21CS011",
+      contactInfo: "1rn21cs011.adarshgs@gmail.com",
       title: "",
       desc: "",
       selectedOption: ["Academic Issues"],
@@ -163,7 +171,7 @@ function FormDisplay() {
             usn: values.studentId,
           },
           category: {
-            category: values.selectedOption[0],
+            category: "Class",
           },
           elements: [
             {
