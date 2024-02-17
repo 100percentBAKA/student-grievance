@@ -33,11 +33,6 @@ import { useNavigate } from "react-router-dom";
 //* custom api hooks imports
 import useFetchData from "../hooks/useFetchData";
 
-//* constants
-//? email will come from the user side
-const email = "1rn21cs011.adarshgs@gmail.com";
-const usn = email.substring(0, 10);
-
 //? styled components
 const StyledSubCtn = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -134,28 +129,7 @@ export default function StudentDashboard() {
   // ? handling programmatic navigation
   const navigate = useNavigate();
 
-  // ? custom fetchData query
-  const { data: loginData, error: loginError } = useFetchData(
-    `http://localhost:8080/user/login/${email}`
-  );
-
-  useEffect(() => {
-    if (loginData) {
-      const details = {
-        ...loginData,
-        usn,
-        email
-      };
-      localStorage.setItem("userDetails", JSON.stringify(details));
-    }
-
-    if (loginError) {
-      alert("error saving data into local storage");
-    }
-  }, [loginData, loginError]);
-
-  // console.log(JSON.parse(localStorage.getItem("userDetails")));
-
+  const usn = JSON.parse(localStorage.getItem("userDetails")).usn;
   const { data, modal, setModal, error } = useFetchData(
     `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
   );

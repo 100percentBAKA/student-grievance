@@ -15,7 +15,6 @@ import GrievanceForm from './pages/GrievanceForm'
 import { Routes, Route } from 'react-router-dom'
 import PageNotFound from './pages/PageNotFound'
 
-
 export default function App() {
   return (
     <React.Fragment>

@@ -31,6 +31,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useEffect, useState } from "react";
+import useFetchData from "../hooks/useFetchData";
 
 //? styled components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -167,6 +168,11 @@ const listView = [
   },
 ];
 
+//* constants
+//? email will come from the user side
+const email = "1rn21cs011.adarshgs@gmail.com";
+const usn = email.substring(0, 10);
+
 //? menu data
 //! handle this data upon student login
 // const menuData = {
@@ -174,10 +180,6 @@ const listView = [
 //   usn: "1RN21CCS011",
 //   email: "1rn21cs011.adarshgs@gmail.com",
 // };
-
-const menuData = JSON.parse(localStorage.getItem("userDetails"));
-
-// console.log(menuData);
 
 const ListComponent = ({ closeMenu }) => (
   <List>
@@ -200,6 +202,24 @@ export default function Navbar() {
   //? states for handling notification and menu badge no
   const [noNotif, setNoNotif] = useState(4);
   const [menuBadge, setMenuBadge] = useState(true);
+
+  // ? custom fetchData query
+  const { data: loginData, error: loginError } = useFetchData(
+    `http://localhost:8080/user/login/${email}`
+  );
+
+  useEffect(() => {
+    if (loginData) {
+      const details = {
+        ...loginData,
+        usn,
+        email,
+      };
+      localStorage.setItem("userDetails", JSON.stringify(details));
+    }
+  }, [loginData, loginError]);
+
+  const menuData = JSON.parse(localStorage.getItem("userDetails"));
 
   //? handle notification badge, useEffect prevents infinite loop
   useEffect(() => {
@@ -277,7 +297,9 @@ export default function Navbar() {
                   <Box sx={{ fontSize: "25px", fontWeight: 600 }}>
                     {`${menuData.firstname} ${menuData.lastname}`}
                   </Box>
-                  <Box sx={{ fontSize: "13px" }}>{menuData.usn}</Box>
+                  <Box sx={{ fontSize: "13px", fontWeight: 600 }}>
+                    {menuData.usn.toUpperCase()}
+                  </Box>
                   <Box sx={{ fontSize: "13px" }}>{menuData.email}</Box>
                 </Box>
               </StyledMenuBox>
