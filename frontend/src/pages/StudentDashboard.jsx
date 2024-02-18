@@ -129,7 +129,7 @@ export default function StudentDashboard() {
   // ? handling programmatic navigation
   const navigate = useNavigate();
 
-  const usn = JSON.parse(localStorage.getItem("userDetails")).usn;
+  const usn = JSON.parse(localStorage.getItem("userDetails"))?.usn;
   const { data, modal, setModal, error } = useFetchData(
     `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
   );

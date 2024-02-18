@@ -195,10 +195,10 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   //? use auth form auth context provider
-  const { logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   //? states for menu and drawer
-  const [anchorElMenu, setAnchorElMenu] = useState(null);
+  const [anchorElMenu, setAnchorElMenu] = useState("");
   const [showDrawer, setShowDrawer] = useState(false);
 
   //? states for handling notification and menu badge no and modal
@@ -207,12 +207,7 @@ export default function Navbar() {
   const [modal, setModal] = useState(false);
 
   //? fetching data from local storage
-  const [menuData, setMenuData] = useState(
-    JSON.parse(localStorage.getItem("userDetails"))
-  );
-  useEffect(() => {
-    setMenuData(JSON.parse(localStorage.getItem("userDetails")));
-  }, []);
+  const menuData = JSON.parse(localStorage.getItem("userDetails"));
 
   //? handle notification badge, useEffect prevents infinite loop
   useEffect(() => {
@@ -223,15 +218,13 @@ export default function Navbar() {
   const theme = useTheme();
   const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
 
-  const open = Boolean(anchorElMenu);
-
   const handleProfileClick = (event) => {
     setAnchorElMenu(event.currentTarget);
     setShowDrawer(true);
     setMenuBadge(false);
   };
 
-  const handleProfileClose = () => {
+  const handleProfileClose = (event) => {
     setAnchorElMenu(null);
   };
 
@@ -268,25 +261,26 @@ export default function Navbar() {
         </Search>
 
         <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <Tooltip title="Menu">
-            <IconButton
-              id="menu-btn-navbar"
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              color="inherit"
-              aria-controls={open ? "menu-view-navbar" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleProfileClick}
-            >
-              <Badge badgeContent={menuBadge ? 1 : 0} color="error">
-                <Avatar alt="User" />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+          {isAuthenticated ? (
+            <Tooltip title="Menu">
+              <IconButton
+                id="menu-btn-navbar"
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                color="inherit"
+                onClick={handleProfileClick}
+              >
+                <Badge badgeContent={menuBadge ? 1 : 0} color="error">
+                  <Avatar alt="User" />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+          ) : (
+            ""
+          )}
 
-          {isScreenSmaller ? (
+          {isAuthenticated && isScreenSmaller && (
             <Drawer
               anchor="left"
               open={showDrawer}
@@ -295,11 +289,22 @@ export default function Navbar() {
             >
               <ListComponent closeMenu={() => setShowDrawer(false)} />
             </Drawer>
-          ) : (
+          )}
+
+          {isAuthenticated && (
             <Menu
+              id="navbar-menu"
               anchorEl={anchorElMenu}
-              open={open}
+              open={Boolean(anchorElMenu)}
               onClose={handleProfileClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
             >
               <StyledMenuBox>
                 <Box sx={{ marginRight: 2 }}>
@@ -307,12 +312,12 @@ export default function Navbar() {
                 </Box>
                 <Box>
                   <Box sx={{ fontSize: "25px", fontWeight: 600 }}>
-                    {`${menuData.firstname} ${menuData.lastname}`}
+                    {`${menuData?.firstname} ${menuData?.lastname}`}
                   </Box>
                   <Box sx={{ fontSize: "13px", fontWeight: 600 }}>
-                    {menuData.usn.toUpperCase()}
+                    {menuData?.usn.toUpperCase()}
                   </Box>
-                  <Box sx={{ fontSize: "13px" }}>{menuData.email}</Box>
+                  <Box sx={{ fontSize: "13px" }}>{menuData?.email}</Box>
                 </Box>
               </StyledMenuBox>
 

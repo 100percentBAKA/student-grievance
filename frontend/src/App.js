@@ -29,7 +29,7 @@ export default function App() {
 
   return (
     <React.Fragment>
-      {isAuthenticated && <Navbar />}
+      <Navbar />
       <Routes>
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<StudentDashboard />} exact />
@@ -39,8 +39,8 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path='*' element={<PageNotFound />}></Route>
       </Routes>
-      {isAuthenticated && <ScrollTop />}
-      {isAuthenticated && <Footer />}
+      <ScrollTop />
+      <Footer />
     </React.Fragment>
   )
 }
