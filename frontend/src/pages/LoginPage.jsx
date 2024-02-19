@@ -200,7 +200,7 @@ const LoginPage = () => {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/signup" variant="body2">
+                  <Link href="#" variant="body2">
                     Don't have an account? Sign Up
                   </Link>
                 </Grid>
@@ -210,7 +210,7 @@ const LoginPage = () => {
             <Typography variant="body2" sx={{ marginTop: 3 }}>
               Copyright ©{" "}
               <Link href="#" color="inherit">
-                Your Website
+                RNSIT
               </Link>{" "}
               {new Date().getFullYear()}
             </Typography>

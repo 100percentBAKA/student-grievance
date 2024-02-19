@@ -231,16 +231,10 @@ export default function Navbar() {
   const handleLogout = () => {
     setModal(true);
 
-    //? delay for animation
     setTimeout(() => {
-      //? clear all data when logout
       localStorage.clear();
-
-      //? global logout state
       logout();
       setModal(false);
-
-      //? navigate back to login screen
       navigate("/login");
     }, 700);
   };
@@ -250,15 +244,17 @@ export default function Navbar() {
       <StyledAppBarCtn>
         <StyledImg src={rnsLogo} alt="RNSIT LOGO" />
 
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search>
+        {isAuthenticated && (
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+            />
+          </Search>
+        )}
 
         <Box sx={{ display: "flex", flexDirection: "row" }}>
           {isAuthenticated ? (
