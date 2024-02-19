@@ -16,6 +16,8 @@ import {
 } from "../data/constants";
 import grievanceData from "../data/grievanceData";
 import grievanceResponses from "../data/grievanceResponses";
+import useFetchData from "../hooks/useFetchData";
+import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
 //? styled components
 const StyledCatSpan = styled("span")(({ theme }) => ({
@@ -51,21 +53,47 @@ const StyledTagCtn = styled(Box)(({ theme }) => ({
 
 const StyledTitle = styled(Box)(({ theme }) => ({
   fontWeight: 600,
-  fontSize: "2rem",
+  fontSize: "1.6rem",
   color: "black",
 
   [theme.breakpoints.down("lg")]: {
-    fontSize: "1.8rem",
+    fontSize: "1.45rem",
   },
 
   [theme.breakpoints.down("md")]: {
-    fontSize: "1.6rem",
+    fontSize: "1.3rem",
   },
 
   [theme.breakpoints.down("sm")]: {
-    fontSize: "1.4rem",
+    fontSize: "1.3rem",
   },
 }));
+
+function toolTipColor(status) {
+  switch (status) {
+    case "RAISED":
+      return "red";
+    case "PENDING_ACTION":
+      return "yellow";
+    case "IN_PROGRESS":
+      return "yellow";
+    case "WITH_DRAWN":
+      return "black";
+    case "RESOLVED":
+      return "green";
+    default:
+      return "white";
+  }
+}
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = `${date.getDate()}/${
+    date.getMonth() + 1
+  }/${date.getFullYear()}`;
+  const formattedTime = `${date.getHours()}:${date.getMinutes()}`;
+  return `${formattedDate} ${formattedTime}`;
+};
 
 function GrievanceMainArea({ grievance }) {
   return (
@@ -74,71 +102,76 @@ function GrievanceMainArea({ grievance }) {
         <Box
           id="back-to-top-anchor"
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            // alignItems: "center",
             pt: 6,
             pb: 3,
             borderBottom: "0.5px solid black",
+            width: "100%",
           }}
         >
           <StyledMainArea>
-            <StyledTitle>{grievance.title}</StyledTitle>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <StyledTitle>{grievance.title}</StyledTitle>
+              <Tooltip title={grievance.grievanceStatus}>
+                <IconButton
+                  disableRipple
+                  sx={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    backgroundColor: toolTipColor(grievance.grievanceStatus),
+                  }}
+                ></IconButton>
+              </Tooltip>
+            </Box>
 
-            <Box sx={{ fontSize: "1.1rem" }}>{grievance.desc}</Box>
+            <Box sx={{ fontSize: "1rem" }}>
+              {grievance.elements[0].description}
+            </Box>
 
             <StyledTagCtn>
               <Box sx={{ display: "flex", columnGap: 1 }}>
-                {grievance.cat.map((cat, catIndex) => (
-                  <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
+                {grievance.categories.map((cat, catIndex) => (
+                  <StyledCatSpan key={catIndex}>{cat.category}</StyledCatSpan>
                 ))}
               </Box>
               {/* //! Time handling has to be performed here */}
               <Box sx={{ fontSize: FONTSIZE_SMALL_MID }}>
-                Asked: {grievance.time} ago
+                Asked: {formatDate(grievance.asked)}
               </Box>
             </StyledTagCtn>
           </StyledMainArea>
-          <Box>
-            <Tooltip title="Grievance currently active">
-              <IconButton
-                disableRipple
-                sx={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  backgroundColor: "green",
-                  position: "absolute",
-                }}
-              ></IconButton>
-            </Tooltip>
-          </Box>
         </Box>
       </SubContainer>
     </MarginTopBox>
   );
 }
 
+const StyledReplyCtn = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "flex-start",
+  alignItems: "center",
+  borderBottom: "0.5px solid black",
+  paddingTop: theme.spacing(2.5),
+  paddingBottom: theme.spacing(2.5),
+  paddingRight: theme.spacing(4),
+  backgroundColor: "white",
+}));
+
+const StyledTeacherReplyCtn = styled(StyledReplyCtn)(({ theme }) => ({
+  justifyContent: "flex-end",
+  alignItems: "center",
+  backgroundColor: "#F5F5F5",
+}));
+
 function ReplyCtn({ responses }) {
-  const StyledReplyCtn = styled(Box)(({ theme }) => ({
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    borderBottom: "0.5px solid black",
-    paddingTop: theme.spacing(2.5),
-    paddingBottom: theme.spacing(2.5),
-    paddingRight: theme.spacing(4),
-    backgroundColor: "white",
-  }));
-
-  const StyledTeacherReplyCtn = styled(StyledReplyCtn)(({ theme }) => ({
-    justifyContent: "flex-end",
-    alignItems: "center",
-    backgroundColor: "#F5F5F5",
-  }));
-
   return (
     <SubContainer>
       {responses.map((response) =>
@@ -198,30 +231,20 @@ function ReplyCtn({ responses }) {
 
 export default function GrievanceDetail() {
   const { grievanceID } = useParams();
-
-  //! API HANDLING TO BE DONE HERE
-  //? finding grievance with matching ID
-  const grievance = grievanceData.find(
-    (grievance) => grievance.id === parseInt(grievanceID)
+  const { data, modal, setModal, error } = useFetchData(
+    `http://localhost:8080/grievance/${grievanceID}`
   );
 
-  //? find all associated replies with grievance id
-  //? list/arrays of all replies
-  const responses = grievanceResponses.find(
-    (grievanceReplies) => grievanceReplies.grievanceId === parseInt(grievanceID)
-  );
-  //! API HANDLING TO BE DONE HERE
-
-  // console.log(responses)
+  console.log(data);
 
   return (
     <MarginTopBox>
-      {grievance ? (
+      {data ? (
         //? if grievance found, main logic goes here
         <Box sx={{ marginBottom: 5 }}>
-          <GrievanceMainArea grievance={grievance} grievanceID={grievanceID} />
+          <GrievanceMainArea grievance={data} grievanceID={grievanceID} />
           {/* //! handle the author of the reply */}
-          <ReplyCtn responses={responses.responses} />
+          {/* <ReplyCtn responses={responses.responses} /> */}
         </Box>
       ) : (
         //? handle when grievance is not found
@@ -240,6 +263,8 @@ export default function GrievanceDetail() {
           </Box>
         </SubContainer>
       )}
+
+      <ModalWindowLoader modal={modal} setModal={setModal} />
     </MarginTopBox>
   );
 }

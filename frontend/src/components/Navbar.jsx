@@ -287,7 +287,7 @@ export default function Navbar() {
             </Drawer>
           )}
 
-          {isAuthenticated && (
+          {isAuthenticated && !isScreenSmaller && (
             <Menu
               id="navbar-menu"
               anchorEl={anchorElMenu}

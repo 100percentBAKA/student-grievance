@@ -146,7 +146,7 @@ const LoginPage = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
+                    // helperText={formik.touched.email && formik.errors.email}
                   />
                 </Grid>
 
@@ -165,9 +165,9 @@ const LoginPage = () => {
                     error={
                       formik.touched.password && Boolean(formik.errors.password)
                     }
-                    helperText={
-                      formik.touched.password && formik.errors.password
-                    }
+                    // helperText={
+                    //   formik.touched.password && formik.errors.password
+                    // }
                   />
                 </Grid>
 

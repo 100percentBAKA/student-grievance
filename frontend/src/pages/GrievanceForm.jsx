@@ -42,8 +42,7 @@ import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 import useMutateFormData from "../hooks/useMutateFormData";
 
 //! debug constant
-const DEBUG = false;
-
+const DEBUG = true;
 //? styled components
 const StyledInstructionBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -166,11 +165,9 @@ function FormDisplay() {
           student: {
             usn: values.studentId,
           },
-          categories: [
-            {
-              category: "Academic Issues",
-            },
-          ],
+          categories: values.selectedOption.map((option) => ({
+            category: option,
+          })),
           elements: [
             {
               orderIndex: 1,

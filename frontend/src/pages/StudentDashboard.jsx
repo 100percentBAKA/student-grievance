@@ -5,6 +5,8 @@ import {
   Box,
   Button,
   ButtonGroup,
+  IconButton,
+  Tooltip,
   styled,
   useMediaQuery,
   useTheme,
@@ -102,6 +104,7 @@ const StyledCatSpan = styled("span")(({ theme }) => ({
 }));
 
 const StyledCardTitle = styled(Box)(({ theme }) => ({
+  // flex: 0.65,
   cursor: "pointer",
   color: theme.palette.secondary.main,
   fontSize: FONTSIZE_MEDIUM,
@@ -116,6 +119,33 @@ const StyledCardTitle = styled(Box)(({ theme }) => ({
     color: theme.palette.primary.main,
   },
 }));
+
+const StyledCtnHeader = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+    gap: theme.spacing(2),
+  },
+}));
+
+function toolTipColor(status) {
+  switch (status) {
+    case "RAISED":
+      return "red";
+    case "PENDING_ACTION":
+      return "yellow";
+    case "IN_PROGRESS":
+      return "yellow";
+    case "WITH_DRAWN":
+      return "black";
+    case "RESOLVED":
+      return "green";
+    default:
+      return "white";
+  }
+}
 
 export default function StudentDashboard() {
   //? useMediaQuery
@@ -187,7 +217,6 @@ export default function StudentDashboard() {
       date.getMonth() + 1
     }/${date.getFullYear()}`;
     const formattedTime = `${date.getHours()}:${date.getMinutes()}`;
-
     return `${formattedDate} ${formattedTime}`;
   };
 
@@ -244,15 +273,42 @@ export default function StudentDashboard() {
           filterGrievances(data).map((raw, index) => (
             <SubContainer key={index}>
               <StyledMainCtn>
-                <Box key={index} onClick={() => handleTitleClick(raw.id)}>
+                <StyledCtnHeader
+                  key={index}
+                  onClick={() => handleTitleClick(raw.id)}
+                >
                   <StyledCardTitle>{raw.title}</StyledCardTitle>
-                </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 2,
+                      // flex: 0.35,
+                    }}
+                  >
+                    <StyledCatSpan>{raw.id}</StyledCatSpan>
+                    <Tooltip title={raw.grievanceStatus}>
+                      <IconButton
+                        disableRipple
+                        sx={{
+                          width: "15px",
+                          height: "15px",
+                          borderRadius: "50%",
+                          backgroundColor: toolTipColor(raw.grievanceStatus),
+                        }}
+                      ></IconButton>
+                    </Tooltip>
+                  </Box>
+                </StyledCtnHeader>
                 <StyledSubCtnMobile>
-                  {/* <Box sx={{ display: "flex", columnGap: 1 }}>
-                    {data.cat.map((cat, catIndex) => (
-                      <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
-                    ))}
-                  </Box> */}
+                  <Box sx={{ display: "flex", columnGap: 1 }}>
+                    {["Academic Issues", "Career Services"].map(
+                      (cat, catIndex) => (
+                        <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
+                      )
+                    )}
+                  </Box>
                   <Box sx={{ fontSize: FONTSIZE_SMALL }}>
                     Asked: {formatDate(raw.asked)}
                   </Box>
