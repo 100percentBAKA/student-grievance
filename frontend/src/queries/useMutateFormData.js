@@ -6,7 +6,6 @@ export default function useMutateFormData() {
         (data) => axios.post("http://localhost:8080/grievance", data),
         {
             onSuccess: () => {
-                // add success toast here
                 console.log('Post request successful');
             },
             onError: () => {

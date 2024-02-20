@@ -39,7 +39,7 @@ import * as yup from "yup";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
 //* custom api hook imports
-import useMutateFormData from "../hooks/useMutateFormData";
+import useMutateFormData from "../queries/useMutateFormData";
 
 //! debug constant
 const DEBUG = false;
@@ -126,7 +126,7 @@ function FormDisplay() {
   }, []);
 
   //? schema
-  const schema = yup.object().shape({
+  const GRIEVANCE_FORM_SCHEMA = yup.object().shape({
     fullName: yup.string(),
     studentId: yup.string(),
     contactInfo: yup.string(),
@@ -154,7 +154,7 @@ function FormDisplay() {
       desc: "",
       selectedOption: ["Academic Issues"],
     },
-    validationSchema: schema,
+    validationSchema: GRIEVANCE_FORM_SCHEMA,
 
     onSubmit: async (values) => {
       setModal(true);

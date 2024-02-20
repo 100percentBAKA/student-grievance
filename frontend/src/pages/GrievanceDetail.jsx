@@ -2,7 +2,22 @@
 import { useParams } from "react-router-dom";
 
 //* MUI components imports
-import { Avatar, Box, IconButton, Tooltip, styled } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Modal,
+  TextField,
+  Tooltip,
+  styled,
+} from "@mui/material";
+
+//* MUI icons imports
+import AddIcon from "@mui/icons-material/Add";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 //* yup and formik
 import { useFormik } from "formik";
@@ -15,6 +30,7 @@ import SubContainer from "../components/ui/SubContainer";
 //* constants imports
 import {
   FONTSIZE_BIG_MID,
+  FONTSIZE_MEDIUM,
   FONTSIZE_SMALL,
   FONTSIZE_SMALL_MID,
 } from "../data/constants";
@@ -22,7 +38,11 @@ import grievanceData from "../data/grievanceData";
 import grievanceResponses from "../data/grievanceResponses";
 import useFetchData from "../hooks/useFetchData";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import ContainedButton from "../components/ui/ContainedButton";
+
+// * queries imports
+import useMutateComment from "../queries/useMutateComment";
 
 //? styled components
 const StyledCatSpan = styled("span")(({ theme }) => ({
@@ -100,7 +120,18 @@ const formatDate = (dateString) => {
   return `${formattedDate} ${formattedTime}`;
 };
 
-function GrievanceMainArea({ grievance }) {
+function GrievanceMainArea({ grievance, userAuth }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (event) => {
+    setAnchorEl(null);
+  };
+
   return (
     <MarginTopBox>
       <SubContainer>
@@ -122,18 +153,51 @@ function GrievanceMainArea({ grievance }) {
                 alignItems: "center",
               }}
             >
-              <StyledTitle>{grievance.title}</StyledTitle>
-              <Tooltip title={grievance.grievanceStatus}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 4,
+                }}
+              >
+                <StyledTitle>{grievance.title}</StyledTitle>
+                <Tooltip title={grievance.grievanceStatus}>
+                  <IconButton
+                    disableRipple
+                    sx={{
+                      width: "20px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      backgroundColor: toolTipColor(grievance.grievanceStatus),
+                    }}
+                  ></IconButton>
+                </Tooltip>
+              </Box>
+
+              <Box>
                 <IconButton
-                  disableRipple
-                  sx={{
-                    width: "20px",
-                    height: "20px",
-                    borderRadius: "50%",
-                    backgroundColor: toolTipColor(grievance.grievanceStatus),
+                  id="menu-button"
+                  onClick={(e) => handleClick(e)}
+                  aria-controls={open ? "menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+
+                <Menu
+                  id="menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  MenuListProps={{
+                    "aria-labelledby": "menu-button",
                   }}
-                ></IconButton>
-              </Tooltip>
+                  onClose={handleClose}
+                >
+                  <MenuItem>Hello</MenuItem>
+                </Menu>
+              </Box>
             </Box>
 
             <Box sx={{ fontSize: "1rem" }}>
@@ -158,126 +222,274 @@ function GrievanceMainArea({ grievance }) {
   );
 }
 
-const StyledReplyCtn = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "flex-start",
-  alignItems: "center",
-  borderBottom: "0.5px solid black",
-  paddingTop: theme.spacing(2.5),
-  paddingBottom: theme.spacing(2.5),
-  paddingRight: theme.spacing(4),
-  backgroundColor: "white",
-}));
+function stringToColor(string) {
+  let hash = 0;
+  let i;
 
-const StyledTeacherReplyCtn = styled(StyledReplyCtn)(({ theme }) => ({
-  justifyContent: "flex-end",
-  alignItems: "center",
-  backgroundColor: "#F5F5F5",
-}));
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
 
-function ReplyCtn({ responses, userAuth }) {
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+
+  return color;
+}
+
+function stringAvatar(name) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+      fontSize: "0.65rem",
+      width: "22px",
+      height: "22px",
+    },
+    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+  };
+}
+
+function ReplyCtn({ responses }) {
   return (
     <SubContainer>
-      {responses && responses.length > 0 ? (
-        userAuth === "STUDENT" ? (
-          <StyledTeacherReplyCtn>Hello Teacher</StyledTeacherReplyCtn>
-        ) : (
-          <StyledReplyCtn>Hello student</StyledReplyCtn>
-        )
-      ) : (
-        <Box sx={{ mt: 4, textAlign: "center" }}>No Responses made yet</Box>
-      )}
+      <Box
+        sx={{ textAlign: "center", my: 4, fontSize: "1.4rem", fontWeight: 600 }}
+      >
+        Comments
+      </Box>
+
+      {responses.map((comment, index) => (
+        <Box
+          key={index}
+          sx={{
+            marginBottom: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems:
+              comment.userAuthority === "STUDENT" ? "flex-start" : "flex-end",
+          }}
+        >
+          <Box
+            sx={{
+              fontWeight: 600,
+              marginBottom: 1,
+              color: comment.userAuthority === "STUDENT" ? "blue" : "green",
+              fontSize: "0.85rem",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 1,
+                alignItems: "center",
+              }}
+            >
+              <Avatar {...stringAvatar(comment.commentedBy)} />
+              {comment.commentedBy}
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              backgroundColor:
+                comment.userAuthority === "STUDENT" ? "#f0f0f0" : "#e6ffe6",
+              padding: 1,
+              borderRadius: "8px",
+              width: "600px",
+            }}
+          >
+            {comment.comment}
+          </Box>
+          <Box
+            sx={{
+              fontSize: "0.8rem",
+              color: "gray",
+              textAlign: comment.userAuthority === "STUDENT" ? "left" : "right",
+            }}
+          >
+            {formatDate(comment.createTimeStamp)}
+          </Box>
+        </Box>
+      ))}
     </SubContainer>
   );
 }
 
-function AddReply() {
-  return <SubContainer></SubContainer>;
-}
+const StyledReplyBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  marginTop: theme.spacing(6),
+  flex: 0.05,
 
-// function ReplyCtn({ responses }) {
-//   return (
-//     <SubContainer>
-//       {responses.map((response) =>
-//         response.teacherName ? (
-//           <StyledTeacherReplyCtn key={response.id}>
-//             <Avatar>{response.teacherName[0]}</Avatar>
-//             <Box
-//               sx={{
-//                 display: "flex",
-//                 flexDirection: "column",
-//                 rowGap: 2,
-//                 flex: 0.85,
-//                 marginLeft: 5,
-//                 fontSize: "0.933rem",
-//               }}
-//             >
-//               <Box>{response.response}</Box>
-//               <StyledTagCtn>
-//                 <Box sx={{ fontSize: FONTSIZE_SMALL, fontWeight: 600 }}>
-//                   By: {response.teacherName}
-//                 </Box>
-//                 <Box sx={{ fontSize: FONTSIZE_SMALL, fontWeight: 600 }}>
-//                   Replied: {response.time}
-//                 </Box>
-//               </StyledTagCtn>
-//             </Box>
-//           </StyledTeacherReplyCtn>
-//         ) : (
-//           <StyledReplyCtn key={response.id}>
-//             <Box
-//               sx={{
-//                 display: "flex",
-//                 flexDirection: "column",
-//                 rowGap: 3,
-//                 flex: 0.85,
-//               }}
-//             >
-//               <Box>{response.response}</Box>
-//               <Box
-//                 sx={{
-//                   display: "flex",
-//                   flexDirection: "row",
-//                   justifyContent: "space-between",
-//                   alignItems: "center",
-//                 }}
-//               >
-//                 <Box>By: Student</Box>
-//                 <Box>Replied: {response.time}</Box>
-//               </Box>
-//             </Box>
-//           </StyledReplyCtn>
-//         )
-//       )}
-//     </SubContainer>
-//   );
-// }
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+    gap: theme.spacing(2),
+  },
+}));
+
+const StyledCommentBtn = styled(Button)(({ theme }) => ({
+  color: theme.palette.common.white,
+  borderRadius: "3px",
+  textTransform: "none",
+  backgroundColor: theme.palette.primary.main,
+  boxShadow: `0 4px 10px 0 rgba(255, 101, 0, 0.3), 0 6px 20px 0 rgba(255, 101, 0, 0.19)`,
+  fontSize: FONTSIZE_MEDIUM,
+  width: "fit-content",
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: "#e63c1e",
+    boxShadow: `0 8px 20px 0 rgba(255, 101, 0, 0.35), 0 12px 40px 0 rgba(255, 101, 0, 0.24)`,
+  },
+
+  [theme.breakpoints.down("md")]: {
+    fontSize: FONTSIZE_SMALL,
+  },
+}));
+
+//? comment schema
+const COMMENT_SCHEMA = yup.object().shape({
+  comment: yup.string().min(40, "Comment must be a minimum of 40 characters"),
+});
+
+function AddReply({ grievanceID }) {
+  //? states to handle display of the textfield
+  const [showReplyBox, setShowReplyBox] = useState(false);
+  const [modal, setModal] = useState(false);
+  const mutation = useMutateComment(grievanceID);
+
+  const [initialValues, setInitialValues] = useState(
+    JSON.parse(localStorage.getItem("userDetails"))
+  );
+
+  useEffect(() => {
+    setInitialValues(JSON.parse(localStorage.getItem("userDetails")));
+  }, [setInitialValues]);
+
+  //? formik form handling
+  const formik = useFormik({
+    initialValues: {
+      comment: "",
+    },
+
+    validationSchema: COMMENT_SCHEMA,
+
+    onSubmit: async (values) => {
+      setModal(true);
+      try {
+        const commentData = {
+          comment: values.comment,
+          commentedBy: `${initialValues.firstname} ${initialValues.lastname}`,
+          userAuthority: `${initialValues.userAuthority}`,
+        };
+
+        const response = await mutation.mutateAsync(commentData);
+        setShowReplyBox(false);
+      } catch (error) {
+        throw new Error("error posting the comment");
+      } finally {
+        setModal(false);
+      }
+    },
+  });
+
+  return (
+    <SubContainer>
+      <StyledReplyBox>
+        {showReplyBox ? (
+          <StyledCommentBtn onClick={formik.handleSubmit}>
+            Post
+          </StyledCommentBtn>
+        ) : (
+          <StyledCommentBtn onClick={() => setShowReplyBox(true)}>
+            Add Comment
+          </StyledCommentBtn>
+        )}
+
+        {showReplyBox && (
+          <Box
+            component="form"
+            sx={{
+              flex: 0.95,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2.5,
+            }}
+            onSubmit={formik.onSubmit}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "self-end",
+              }}
+            >
+              <TextField
+                id="comment"
+                name="comment"
+                label="Response"
+                placeholder="Write Comments and responses. Minimum 50 characters."
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
+                value={formik.values.comment}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.comment && Boolean(formik.errors.comment)}
+                helperText={formik.touched.comment && formik.errors.comment}
+                inputProps={{ maxLength: 500 }}
+              />
+
+              {formik.values.comment.length < 50 ? (
+                <Box sx={{ color: "red", fontSize: "10px" }}>
+                  {`${formik.values.comment.length} / 500`}
+                </Box>
+              ) : (
+                <Box sx={{ color: "green", fontSize: "10px" }}>
+                  {`${formik.values.comment.length} / 500`}
+                </Box>
+              )}
+            </Box>
+          </Box>
+        )}
+      </StyledReplyBox>
+
+      <ModalWindowLoader modal={modal} setModal={setModal} />
+    </SubContainer>
+  );
+}
 
 export default function GrievanceDetail() {
   const { grievanceID } = useParams();
   const { data, modal, setModal, error } = useFetchData(
     `http://localhost:8080/grievance/${grievanceID}`
   );
+
   const [userAuth, setUserAuth] = useState(
     JSON.parse(localStorage.getItem("userDetails")).userAuthority
   );
 
-  // console.log(data);
-
   useEffect(() => {
     setUserAuth(JSON.parse(localStorage.getItem("userDetails")).userAuthority);
   }, [setUserAuth]);
-
-  console.log(userAuth);
 
   return (
     <MarginTopBox>
       {data ? (
         //? if grievance found, main logic goes here
         <Box sx={{ marginBottom: 5 }}>
-          <GrievanceMainArea grievance={data} grievanceID={grievanceID} />
+          <GrievanceMainArea
+            grievance={data}
+            grievanceID={grievanceID}
+            userAuth={userAuth}
+          />
           <ReplyCtn responses={data.comments} userAuth={userAuth} />
+          <AddReply grievanceID={grievanceID} />
         </Box>
       ) : (
         //? handle when grievance is not found
