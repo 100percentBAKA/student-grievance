@@ -42,7 +42,8 @@ import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 import useMutateFormData from "../hooks/useMutateFormData";
 
 //! debug constant
-const DEBUG = true;
+const DEBUG = false;
+
 //? styled components
 const StyledInstructionBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -131,11 +132,11 @@ function FormDisplay() {
     contactInfo: yup.string(),
     title: yup
       .string()
-      .min(15, "Title must be a minimum of 15 characters")
+      .min(20, "Title must be a minimum of 20 characters")
       .required("Title is required"),
     desc: yup
       .string()
-      .min(50, "Description must be a minimum of 50 characters")
+      .min(80, "Description must be a minimum of 80 characters")
       .required("Description is required"),
     selectedOption: yup
       .array()
@@ -250,35 +251,70 @@ function FormDisplay() {
           disabled
         />
 
-        <TextField
-          id="title"
-          name="title"
-          label="Title"
-          placeholder="Be specific and imagine you’re asking a question to another person."
-          variant="outlined"
-          fullWidth
-          value={formik.values.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.title && Boolean(formik.errors.title)}
-          helperText={formik.touched.title && formik.errors.title}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "self-end",
+          }}
+        >
+          <TextField
+            id="title"
+            name="title"
+            label="Title"
+            placeholder="Be specific and imagine you’re asking a question to another person."
+            variant="outlined"
+            fullWidth
+            value={formik.values.title}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.title && Boolean(formik.errors.title)}
+            helperText={formik.touched.title && formik.errors.title}
+            inputProps={{ maxLength: 100 }} // title no more than 100 characters
+          />
+          {formik.values.title.length < 20 ? (
+            <Box sx={{ color: "red", fontSize: "10px" }}>
+              {`${formik.values.title.length} / 100`}
+            </Box>
+          ) : (
+            <Box sx={{ color: "green", fontSize: "10px" }}>
+              {`${formik.values.title.length} / 100`}
+            </Box>
+          )}
+        </Box>
 
-        <TextField
-          id="desc"
-          name="desc"
-          label="Description"
-          placeholder="Introduce the grievance and expand on what you put in the title. Minimum 20 characters."
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={5}
-          value={formik.values.desc}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.desc && Boolean(formik.errors.desc)}
-          helperText={formik.touched.desc && formik.errors.desc}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "self-end",
+          }}
+        >
+          <TextField
+            id="desc"
+            name="desc"
+            label="Description"
+            placeholder="Introduce the grievance and expand on what you put in the title. Minimum 20 characters."
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={5}
+            value={formik.values.desc}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.desc && Boolean(formik.errors.desc)}
+            helperText={formik.touched.desc && formik.errors.desc}
+          />
+          {formik.values.desc.length < 80 ? (
+            <Box sx={{ color: "red", fontSize: "10px" }}>
+              {`${formik.values.desc.length} / 2000`}
+            </Box>
+          ) : (
+            <Box sx={{ color: "green", fontSize: "10px" }}>
+              {`${formik.values.desc.length} / 2000`}
+            </Box>
+          )}
+        </Box>
 
         <Select
           multiple

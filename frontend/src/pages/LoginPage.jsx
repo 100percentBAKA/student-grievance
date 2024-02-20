@@ -40,7 +40,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   //? use auth from auth context
-  const { login } = useAuth();
+  const { login, setIsStudent } = useAuth();
 
   const [modal, setModal] = useState(null);
   const [error, setError] = useState(null);

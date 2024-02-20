@@ -6,6 +6,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(Boolean(localStorage.getItem("auth")));
+    // const [isStudent, setIsStudent] = useState(true)
 
     const login = () => {
         setIsAuthenticated(true);

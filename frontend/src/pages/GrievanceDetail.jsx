@@ -4,6 +4,10 @@ import { useParams } from "react-router-dom";
 //* MUI components imports
 import { Avatar, Box, IconButton, Tooltip, styled } from "@mui/material";
 
+//* yup and formik
+import { useFormik } from "formik";
+import * as yup from "yup";
+
 //* native components imports
 import MarginTopBox from "../components/ui/MarginTopBox";
 import SubContainer from "../components/ui/SubContainer";
@@ -18,6 +22,7 @@ import grievanceData from "../data/grievanceData";
 import grievanceResponses from "../data/grievanceResponses";
 import useFetchData from "../hooks/useFetchData";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
+import { useEffect, useState } from "react";
 
 //? styled components
 const StyledCatSpan = styled("span")(({ theme }) => ({
@@ -171,71 +176,100 @@ const StyledTeacherReplyCtn = styled(StyledReplyCtn)(({ theme }) => ({
   backgroundColor: "#F5F5F5",
 }));
 
-function ReplyCtn({ responses }) {
+function ReplyCtn({ responses, userAuth }) {
   return (
     <SubContainer>
-      {responses.map((response) =>
-        response.teacherName ? (
-          <StyledTeacherReplyCtn key={response.id}>
-            <Avatar>{response.teacherName[0]}</Avatar>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: 2,
-                flex: 0.85,
-                marginLeft: 5,
-                fontSize: "0.933rem",
-              }}
-            >
-              <Box>{response.response}</Box>
-              <StyledTagCtn>
-                <Box sx={{ fontSize: FONTSIZE_SMALL, fontWeight: 600 }}>
-                  By: {response.teacherName}
-                </Box>
-                <Box sx={{ fontSize: FONTSIZE_SMALL, fontWeight: 600 }}>
-                  Replied: {response.time}
-                </Box>
-              </StyledTagCtn>
-            </Box>
-          </StyledTeacherReplyCtn>
+      {responses && responses.length > 0 ? (
+        userAuth === "STUDENT" ? (
+          <StyledTeacherReplyCtn>Hello Teacher</StyledTeacherReplyCtn>
         ) : (
-          <StyledReplyCtn key={response.id}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: 3,
-                flex: 0.85,
-              }}
-            >
-              <Box>{response.response}</Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Box>By: Student</Box>
-                <Box>Replied: {response.time}</Box>
-              </Box>
-            </Box>
-          </StyledReplyCtn>
+          <StyledReplyCtn>Hello student</StyledReplyCtn>
         )
+      ) : (
+        <Box sx={{ mt: 4, textAlign: "center" }}>No Responses made yet</Box>
       )}
     </SubContainer>
   );
 }
+
+function AddReply() {
+  return <SubContainer></SubContainer>;
+}
+
+// function ReplyCtn({ responses }) {
+//   return (
+//     <SubContainer>
+//       {responses.map((response) =>
+//         response.teacherName ? (
+//           <StyledTeacherReplyCtn key={response.id}>
+//             <Avatar>{response.teacherName[0]}</Avatar>
+//             <Box
+//               sx={{
+//                 display: "flex",
+//                 flexDirection: "column",
+//                 rowGap: 2,
+//                 flex: 0.85,
+//                 marginLeft: 5,
+//                 fontSize: "0.933rem",
+//               }}
+//             >
+//               <Box>{response.response}</Box>
+//               <StyledTagCtn>
+//                 <Box sx={{ fontSize: FONTSIZE_SMALL, fontWeight: 600 }}>
+//                   By: {response.teacherName}
+//                 </Box>
+//                 <Box sx={{ fontSize: FONTSIZE_SMALL, fontWeight: 600 }}>
+//                   Replied: {response.time}
+//                 </Box>
+//               </StyledTagCtn>
+//             </Box>
+//           </StyledTeacherReplyCtn>
+//         ) : (
+//           <StyledReplyCtn key={response.id}>
+//             <Box
+//               sx={{
+//                 display: "flex",
+//                 flexDirection: "column",
+//                 rowGap: 3,
+//                 flex: 0.85,
+//               }}
+//             >
+//               <Box>{response.response}</Box>
+//               <Box
+//                 sx={{
+//                   display: "flex",
+//                   flexDirection: "row",
+//                   justifyContent: "space-between",
+//                   alignItems: "center",
+//                 }}
+//               >
+//                 <Box>By: Student</Box>
+//                 <Box>Replied: {response.time}</Box>
+//               </Box>
+//             </Box>
+//           </StyledReplyCtn>
+//         )
+//       )}
+//     </SubContainer>
+//   );
+// }
 
 export default function GrievanceDetail() {
   const { grievanceID } = useParams();
   const { data, modal, setModal, error } = useFetchData(
     `http://localhost:8080/grievance/${grievanceID}`
   );
+  const [userAuth, setUserAuth] = useState(
+    JSON.parse(localStorage.getItem("userDetails")).userAuthority
+  );
 
-  console.log(data);
+  // console.log(data);
+
+  useEffect(() => {
+    setUserAuth(JSON.parse(localStorage.getItem("userDetails")).userAuthority);
+  }, [setUserAuth]);
+
+  console.log(userAuth);
 
   return (
     <MarginTopBox>
@@ -243,8 +277,7 @@ export default function GrievanceDetail() {
         //? if grievance found, main logic goes here
         <Box sx={{ marginBottom: 5 }}>
           <GrievanceMainArea grievance={data} grievanceID={grievanceID} />
-          {/* //! handle the author of the reply */}
-          {/* <ReplyCtn responses={responses.responses} /> */}
+          <ReplyCtn responses={data.comments} userAuth={userAuth} />
         </Box>
       ) : (
         //? handle when grievance is not found
