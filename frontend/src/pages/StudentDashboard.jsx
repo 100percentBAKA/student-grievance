@@ -269,7 +269,7 @@ export default function StudentDashboard() {
           marginBottom: 5,
         }}
       >
-        {filterGrievances(data) ? (
+        {filterGrievances(data) &&
           filterGrievances(data).map((raw, index) => (
             <SubContainer key={index}>
               <StyledMainCtn>
@@ -315,12 +315,13 @@ export default function StudentDashboard() {
                 </StyledSubCtnMobile>
               </StyledMainCtn>
             </SubContainer>
-          ))
-        ) : (
+          ))}
+
+        {/* {filterGrievances(data).length < 0 && (
           <Box sx={{ textAlign: "center" }}>
             <CustomH3>No grievance Data to Display</CustomH3>
           </Box>
-        )}
+        )} */}
       </Box>
 
       {/* Modal window with Loader */}

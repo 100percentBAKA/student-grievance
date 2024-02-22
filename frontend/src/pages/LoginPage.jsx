@@ -40,7 +40,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   //? use auth from auth context
-  const { login, setIsStudent } = useAuth();
+  const { login } = useAuth();
 
   const [modal, setModal] = useState(null);
   const [error, setError] = useState(null);
@@ -146,8 +146,13 @@ const LoginPage = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={formik.touched.email && Boolean(formik.errors.email)}
-                    // helperText={formik.touched.email && formik.errors.email}
+                    helperText={formik.touched.email && formik.errors.email}
                   />
+                  {error && (
+                    <Box sx={{ color: "red", fontSize: "13px" }}>
+                      Email not registered
+                    </Box>
+                  )}
                 </Grid>
 
                 <Grid item xs={12}>
@@ -165,10 +170,15 @@ const LoginPage = () => {
                     error={
                       formik.touched.password && Boolean(formik.errors.password)
                     }
-                    // helperText={
-                    //   formik.touched.password && formik.errors.password
-                    // }
+                    helperText={
+                      formik.touched.password && formik.errors.password
+                    }
                   />
+                  {error && (
+                    <Box sx={{ color: "red", fontSize: "13px" }}>
+                      Password incorrect
+                    </Box>
+                  )}
                 </Grid>
 
                 <Grid item xs={12}>
@@ -220,24 +230,6 @@ const LoginPage = () => {
         {/* Modal window with loader */}
         <ModalWindowLoader modal={modal} setModal={setModal} />
       </Box>
-
-      {error ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "red",
-            fontWeight: 600,
-            fontSize: "18px",
-            marginTop: 5,
-          }}
-        >
-          Please check username and password !!
-        </Box>
-      ) : (
-        ""
-      )}
     </>
   );
 };

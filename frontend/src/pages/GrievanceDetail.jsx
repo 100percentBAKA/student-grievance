@@ -43,6 +43,7 @@ import ContainedButton from "../components/ui/ContainedButton";
 
 // * queries imports
 import useMutateComment from "../queries/useMutateComment";
+import { DisabledByDefault } from "@mui/icons-material";
 
 //? styled components
 const StyledCatSpan = styled("span")(({ theme }) => ({
@@ -195,7 +196,18 @@ function GrievanceMainArea({ grievance, userAuth }) {
                   }}
                   onClose={handleClose}
                 >
-                  <MenuItem>Hello</MenuItem>
+                  {userAuth === "STUDENT" ? (
+                    <>
+                      <MenuItem>Mark Issue as resolved</MenuItem>
+                      <MenuItem>Withdraw Issue</MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem>Close Issue as resolved</MenuItem>
+                      <MenuItem>Ask student to review the issue</MenuItem>
+                      <MenuItem>Withdraw Issue</MenuItem>
+                    </>
+                  )}
                 </Menu>
               </Box>
             </Box>
@@ -261,59 +273,73 @@ function ReplyCtn({ responses }) {
         Comments
       </Box>
 
-      {responses.map((comment, index) => (
-        <Box
-          key={index}
-          sx={{
-            marginBottom: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems:
-              comment.userAuthority === "STUDENT" ? "flex-start" : "flex-end",
-          }}
-        >
+      {responses.length > 0 ? (
+        responses.map((comment, index) => (
           <Box
+            key={index}
             sx={{
-              fontWeight: 600,
               marginBottom: 1,
-              color: comment.userAuthority === "STUDENT" ? "blue" : "green",
-              fontSize: "0.85rem",
+              display: "flex",
+              flexDirection: "column",
+              alignItems:
+                comment.userAuthority === "STUDENT" ? "flex-start" : "flex-end",
             }}
           >
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 1,
-                alignItems: "center",
+                fontWeight: 600,
+                marginBottom: 1,
+                color: comment.userAuthority === "STUDENT" ? "blue" : "green",
+                fontSize: "0.85rem",
               }}
             >
-              <Avatar {...stringAvatar(comment.commentedBy)} />
-              {comment.commentedBy}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                }}
+              >
+                <Avatar {...stringAvatar(comment.commentedBy)} />
+                {comment.commentedBy}
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                backgroundColor:
+                  comment.userAuthority === "STUDENT" ? "#f0f0f0" : "#e6ffe6",
+                padding: 1,
+                borderRadius: "8px",
+                width: "600px",
+              }}
+            >
+              {comment.comment}
+            </Box>
+            <Box
+              sx={{
+                fontSize: "0.8rem",
+                color: "gray",
+                textAlign:
+                  comment.userAuthority === "STUDENT" ? "left" : "right",
+              }}
+            >
+              {formatDate(comment.createTimeStamp)}
             </Box>
           </Box>
-          <Box
-            sx={{
-              backgroundColor:
-                comment.userAuthority === "STUDENT" ? "#f0f0f0" : "#e6ffe6",
-              padding: 1,
-              borderRadius: "8px",
-              width: "600px",
-            }}
-          >
-            {comment.comment}
-          </Box>
-          <Box
-            sx={{
-              fontSize: "0.8rem",
-              color: "gray",
-              textAlign: comment.userAuthority === "STUDENT" ? "left" : "right",
-            }}
-          >
-            {formatDate(comment.createTimeStamp)}
-          </Box>
+        ))
+      ) : (
+        <Box
+          sx={{
+            fontSize: "1.15rem",
+            fontWeight: 600,
+            color: "secondary.main",
+            textAlign: "center",
+          }}
+        >
+          No Comments / Responses made yet
         </Box>
-      ))}
+      )}
     </SubContainer>
   );
 }
@@ -401,7 +427,10 @@ function AddReply({ grievanceID }) {
     <SubContainer>
       <StyledReplyBox>
         {showReplyBox ? (
-          <StyledCommentBtn onClick={formik.handleSubmit}>
+          <StyledCommentBtn
+            onClick={formik.handleSubmit}
+            disabled={formik.values.comment.length < 50}
+          >
             Post
           </StyledCommentBtn>
         ) : (
