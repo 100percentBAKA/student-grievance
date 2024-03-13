@@ -9,14 +9,12 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Modal,
   TextField,
   Tooltip,
   styled,
 } from "@mui/material";
 
 //* MUI icons imports
-import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 //* yup and formik
@@ -34,12 +32,9 @@ import {
   FONTSIZE_SMALL,
   FONTSIZE_SMALL_MID,
 } from "../data/constants";
-import grievanceData from "../data/grievanceData";
-import grievanceResponses from "../data/grievanceResponses";
 import useFetchData from "../hooks/useFetchData";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 import React, { useEffect, useState } from "react";
-import ContainedButton from "../components/ui/ContainedButton";
 
 // * queries imports
 import useMutateComment from "../queries/useMutateComment";
