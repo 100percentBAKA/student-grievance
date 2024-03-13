@@ -20,7 +20,4 @@
 /yarn-debug.log*
 /yarn-error.log*
 
-#ignore .env files 
-/backend/db_config.env
-
 .idea

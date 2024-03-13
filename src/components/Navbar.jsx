@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 //* images imports
 import rnsLogo from "../assets/rnsit-logo.jpg";
 
@@ -30,21 +32,21 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useEffect, useState } from "react";
+
+//* rrd imports
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import ModalWindowLoader from "./ui/ModalWindowLoader";
 
 //? styled components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.common.white,
-  // backgroundColor: "green",
 }));
 
 const StyledAppBarCtn = styled(Box)(({ theme }) => ({
-  width: "1200px", // desktop first approach
+  width: "1200px",
   margin: "auto",
-  // backgroundColor: "red",
-
   padding: theme.spacing(1),
-
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
@@ -169,12 +171,12 @@ const listView = [
 
 //? menu data
 //! handle this data upon student login
-const menuData = {
-  firstname: "Adarsh",
-  lastname: "G S",
-  usn: "1RN21CCS011",
-  email: "1rn21cs011.adarshgs@gmail.com",
-};
+// const menuData = {
+//   firstname: "Adarsh",
+//   lastname: "G S",
+//   usn: "1RN21CCS011",
+//   email: "1rn21cs011.adarshgs@gmail.com",
+// };
 
 const ListComponent = ({ closeMenu }) => (
   <List>
@@ -190,31 +192,51 @@ const ListComponent = ({ closeMenu }) => (
 );
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
+  //? use auth form auth context provider
+  const { isAuthenticated, logout } = useAuth();
+
   //? states for menu and drawer
-  const [anchorElMenu, setAnchorElMenu] = useState(null);
+  const [anchorElMenu, setAnchorElMenu] = useState("");
   const [showDrawer, setShowDrawer] = useState(false);
 
-  //? states for handling notification and menu badge no
+  //? states for handling notification and menu badge no and modal
   const [noNotif, setNoNotif] = useState(4);
   const [menuBadge, setMenuBadge] = useState(true);
+  const [modal, setModal] = useState(false);
+
+  //? fetching data from local storage
+  const menuData = JSON.parse(localStorage.getItem("userDetails"));
 
   //? handle notification badge, useEffect prevents infinite loop
   useEffect(() => {
     if (noNotif === 0) setMenuBadge(false);
   }, [noNotif]);
 
-  //? useMediaQuery
+  //? useMediaQuery for obtaining current view port size
   const theme = useTheme();
   const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
 
-  const open = Boolean(anchorElMenu);
   const handleProfileClick = (event) => {
     setAnchorElMenu(event.currentTarget);
     setShowDrawer(true);
     setMenuBadge(false);
   };
-  const handleProfileClose = () => {
+
+  const handleProfileClose = (event) => {
     setAnchorElMenu(null);
+  };
+
+  const handleLogout = () => {
+    setModal(true);
+
+    setTimeout(() => {
+      localStorage.clear();
+      logout();
+      setModal(false);
+      navigate("/login");
+    }, 700);
   };
 
   return (
@@ -222,36 +244,39 @@ export default function Navbar() {
       <StyledAppBarCtn>
         <StyledImg src={rnsLogo} alt="RNSIT LOGO" />
 
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search>
+        {isAuthenticated && (
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+            />
+          </Search>
+        )}
 
         <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <Tooltip title="Menu">
-            <IconButton
-              id="menu-btn-navbar"
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              color="inherit"
-              aria-controls={open ? "menu-view-navbar" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleProfileClick}
-            >
-              <Badge badgeContent={menuBadge ? 1 : 0} color="error">
-                <Avatar alt="User" />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+          {isAuthenticated ? (
+            <Tooltip title="Menu">
+              <IconButton
+                id="menu-btn-navbar"
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                color="inherit"
+                onClick={handleProfileClick}
+              >
+                <Badge badgeContent={menuBadge ? 1 : 0} color="error">
+                  <Avatar alt="User" />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+          ) : (
+            ""
+          )}
 
-          {isScreenSmaller ? (
+          {isAuthenticated && isScreenSmaller && (
             <Drawer
               anchor="left"
               open={showDrawer}
@@ -260,11 +285,22 @@ export default function Navbar() {
             >
               <ListComponent closeMenu={() => setShowDrawer(false)} />
             </Drawer>
-          ) : (
+          )}
+
+          {isAuthenticated && !isScreenSmaller && (
             <Menu
+              id="navbar-menu"
               anchorEl={anchorElMenu}
-              open={open}
+              open={Boolean(anchorElMenu)}
               onClose={handleProfileClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
             >
               <StyledMenuBox>
                 <Box sx={{ marginRight: 2 }}>
@@ -272,10 +308,12 @@ export default function Navbar() {
                 </Box>
                 <Box>
                   <Box sx={{ fontSize: "25px", fontWeight: 600 }}>
-                    {`${menuData.firstname} ${menuData.lastname}`}
+                    {`${menuData?.firstname} ${menuData?.lastname}`}
                   </Box>
-                  <Box sx={{ fontSize: "13px" }}>{menuData.usn}</Box>
-                  <Box sx={{ fontSize: "13px" }}>{menuData.email}</Box>
+                  <Box sx={{ fontSize: "13px", fontWeight: 600 }}>
+                    {menuData?.usn.toUpperCase()}
+                  </Box>
+                  <Box sx={{ fontSize: "13px" }}>{menuData?.email}</Box>
                 </Box>
               </StyledMenuBox>
 
@@ -295,7 +333,7 @@ export default function Navbar() {
                 </ListItemIcon>
                 Settings
               </MenuItem>
-              <MenuItem>
+              <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <LogoutIcon fontSize="small" />
                 </ListItemIcon>
@@ -305,6 +343,9 @@ export default function Navbar() {
           )}
         </Box>
       </StyledAppBarCtn>
+
+      {/* Modal window with hashloader */}
+      <ModalWindowLoader modal={modal} setModal={setModal} />
     </StyledAppBar>
   );
 }

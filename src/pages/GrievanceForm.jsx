@@ -39,7 +39,10 @@ import * as yup from "yup";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
 //* custom api hook imports
-import useMutateData from "../hooks/useMutateData";
+import useMutateFormData from "../queries/useMutateFormData";
+
+//! debug constant
+const DEBUG = false;
 
 //? styled components
 const StyledInstructionBox = styled(Box)(({ theme }) => ({
@@ -85,8 +88,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const debug = false;
-
 function BannerDisplay({ viewPort }) {
   return (
     <BannerBG height={viewPort ? BANNER_SIZE_FORM_MD : BANNER_SIZE_FORM}>
@@ -110,24 +111,32 @@ function BannerDisplay({ viewPort }) {
 }
 
 function FormDisplay() {
-  const mutation = useMutateData();
+  const mutation = useMutateFormData();
   const navigate = useNavigate();
 
   //? modal window with loader states
   const [modal, setModal] = useState(false);
 
+  //? state to manage initial values
+  const [initialValues, setInitialValues] = useState(
+    JSON.parse(localStorage.getItem("userDetails"))
+  );
+  useEffect(() => {
+    setInitialValues(JSON.parse(localStorage.getItem("userDetails")));
+  }, []);
+
   //? schema
-  const schema = yup.object().shape({
+  const GRIEVANCE_FORM_SCHEMA = yup.object().shape({
     fullName: yup.string(),
     studentId: yup.string(),
     contactInfo: yup.string(),
     title: yup
       .string()
-      .min(15, "Title must be a minimum of 15 characters")
+      .min(20, "Title must be a minimum of 20 characters")
       .required("Title is required"),
     desc: yup
       .string()
-      .min(50, "Description must be a minimum of 50 characters")
+      .min(80, "Description must be a minimum of 80 characters")
       .required("Description is required"),
     selectedOption: yup
       .array()
@@ -136,18 +145,16 @@ function FormDisplay() {
   });
 
   //? formik form handling
-  //! inject the values from the session storage / cookies into the initial values of full name, studentId and contactInfo
   const formik = useFormik({
     initialValues: {
-      fullName: "Adarsh G S",
-      studentId: "1RN21CS011",
-      contactInfo: "1rn21cs011.adarshgs@gmail.com",
+      fullName: `${initialValues.firstname} ${initialValues.lastname}`,
+      studentId: initialValues.usn.toUpperCase(),
+      contactInfo: initialValues.email,
       title: "",
       desc: "",
       selectedOption: ["Academic Issues"],
     },
-
-    validationSchema: schema,
+    validationSchema: GRIEVANCE_FORM_SCHEMA,
 
     onSubmit: async (values) => {
       setModal(true);
@@ -159,9 +166,9 @@ function FormDisplay() {
           student: {
             usn: values.studentId,
           },
-          category: {
-            category: values.selectedOption[0],
-          },
+          categories: values.selectedOption.map((option) => ({
+            category: option,
+          })),
           elements: [
             {
               orderIndex: 1,
@@ -169,8 +176,9 @@ function FormDisplay() {
             },
           ],
         };
+        DEBUG && console.log(formData);
         const response = await mutation.mutateAsync(formData);
-        console.log(response);
+        DEBUG && console.log(response);
       } catch (error) {
         throw new Error("Error while submitting the form");
       } finally {
@@ -243,35 +251,70 @@ function FormDisplay() {
           disabled
         />
 
-        <TextField
-          id="title"
-          name="title"
-          label="Title"
-          placeholder="Be specific and imagine you’re asking a question to another person."
-          variant="outlined"
-          fullWidth
-          value={formik.values.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.title && Boolean(formik.errors.title)}
-          helperText={formik.touched.title && formik.errors.title}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "self-end",
+          }}
+        >
+          <TextField
+            id="title"
+            name="title"
+            label="Title"
+            placeholder="Be specific and imagine you’re asking a question to another person."
+            variant="outlined"
+            fullWidth
+            value={formik.values.title}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.title && Boolean(formik.errors.title)}
+            helperText={formik.touched.title && formik.errors.title}
+            inputProps={{ maxLength: 100 }} // title no more than 100 characters
+          />
+          {formik.values.title.length < 20 ? (
+            <Box sx={{ color: "red", fontSize: "10px" }}>
+              {`${formik.values.title.length} / 100`}
+            </Box>
+          ) : (
+            <Box sx={{ color: "green", fontSize: "10px" }}>
+              {`${formik.values.title.length} / 100`}
+            </Box>
+          )}
+        </Box>
 
-        <TextField
-          id="desc"
-          name="desc"
-          label="Description"
-          placeholder="Introduce the grievance and expand on what you put in the title. Minimum 20 characters."
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={5}
-          value={formik.values.desc}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.desc && Boolean(formik.errors.desc)}
-          helperText={formik.touched.desc && formik.errors.desc}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "self-end",
+          }}
+        >
+          <TextField
+            id="desc"
+            name="desc"
+            label="Description"
+            placeholder="Introduce the grievance and expand on what you put in the title. Minimum 20 characters."
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={5}
+            value={formik.values.desc}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.desc && Boolean(formik.errors.desc)}
+            helperText={formik.touched.desc && formik.errors.desc}
+          />
+          {formik.values.desc.length < 80 ? (
+            <Box sx={{ color: "red", fontSize: "10px" }}>
+              {`${formik.values.desc.length} / 2000`}
+            </Box>
+          ) : (
+            <Box sx={{ color: "green", fontSize: "10px" }}>
+              {`${formik.values.desc.length} / 2000`}
+            </Box>
+          )}
+        </Box>
 
         <Select
           multiple

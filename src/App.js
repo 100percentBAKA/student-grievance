@@ -12,23 +12,35 @@ import GrievanceDetail from './pages/GrievanceDetail'
 import GrievanceForm from './pages/GrievanceForm'
 
 //* react router imports 
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import PageNotFound from './pages/PageNotFound'
+import LoginPage from './pages/LoginPage'
 
+// * use auth
+import { useAuth } from "./hooks/useAuth"
 
 export default function App() {
+  const { isAuthenticated } = useAuth()
+  const PrivateRoute = () => {
+    return (
+      !isAuthenticated ? <Navigate to="/login" /> : <Outlet />
+    )
+  }
+
   return (
     <React.Fragment>
-      <Navbar />
+      {isAuthenticated && <Navbar />}
       <Routes>
-        <Route path="/" element={<StudentDashboard />} />
-        <Route path="/grievance/:grievanceID" element={<GrievanceDetail />} />
-        <Route path="/forms" element={<GrievanceForm />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/" element={<StudentDashboard />} exact />
+          <Route path="/grievance/:grievanceID" element={<GrievanceDetail />} />
+          <Route path="/forms" element={<GrievanceForm />} />
+        </Route>
+        <Route path="/login" element={<LoginPage />} />
         <Route path='*' element={<PageNotFound />}></Route>
       </Routes>
-      <ScrollTop />
-      <Footer />
+      {isAuthenticated && <ScrollTop />}
+      {isAuthenticated && <Footer />}
     </React.Fragment>
-
   )
 }

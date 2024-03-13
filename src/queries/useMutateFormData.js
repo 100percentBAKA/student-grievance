@@ -1,12 +1,11 @@
 import { useMutation } from "react-query"
 import axios from "axios";
 
-export default function useMutateData() {
+export default function useMutateFormData() {
     return useMutation(
-        (data) => axios.post("http://localhost:8080/grievance", data),
+        (data) => axios.post("https://43.204.145.104:8000/grievance", data),
         {
             onSuccess: () => {
-                // add success toast here
                 console.log('Post request successful');
             },
             onError: () => {
