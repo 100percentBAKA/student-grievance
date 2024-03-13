@@ -18,9 +18,6 @@ import BannerBG from "../components/ui/BannerBG";
 import MarginTopBox from "../components/ui/MarginTopBox";
 import ModalWindowLoader from "../components/ui/ModalWindowLoader";
 
-//* data import
-import grievanceData from "../data/grievanceData";
-
 import {
   BANNER_SIZE_DASHBOARD,
   BANNER_SIZE_DASHBOARD_MD,
@@ -31,10 +28,15 @@ import {
 } from "../data/constants";
 
 //* react router dom
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-//* custom query hook
-import { useGrievancesQuery } from "../apis/studentApis";
+//* custom api hooks imports
+import useFetchData from "../hooks/useFetchData";
+
+//* constants
+//? email will come from the user side
+const email = "1rn21cs011.adarshgs@gmail.com";
+const usn = email.substring(0, 10);
 
 //? styled components
 const StyledSubCtn = styled(Box)(({ theme }) => ({
@@ -125,24 +127,17 @@ export default function StudentDashboard() {
   const theme = useTheme();
   const isScreenSmaller = useMediaQuery(theme.breakpoints.down("md"));
 
+  //? states
+  const [showResolved, setShowResolved] = useState(false);
+  const [showUnResolved, setShowUnResolved] = useState(false);
+
   // ? handling programmatic navigation
   const navigate = useNavigate();
 
-  //? modal window handling
-  const [modal, setModal] = useState(false);
+  const { data, modal, setModal, error } = useFetchData(
+    `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
+  );
 
-  //? fetching grievances from the server
-  // const { data, isLoading, isFetching, isError, error } = useGrievancesQuery();
-
-  // useEffect(() => {
-  //   if (isLoading || isFetching) {
-  //     setModal(true);
-  //   } else {
-  //     setModal(false);
-  //   }
-  // }, [isLoading, isFetching]);
-
-  //! only for testing, will implement better loading animation late
   const modelAndDelay = (to, delay = 2000) => {
     setModal(true);
 
@@ -163,13 +158,44 @@ export default function StudentDashboard() {
     modelAndDelay(`/grievance/${id}`, 1200);
   };
 
-  // if (isLoading || isFetching) {
-  //   return <div>Loading...</div>;
-  // }
+  const handleAllClick = () => {
+    setShowResolved(false);
+    setShowUnResolved(false);
+  };
 
-  // if (isError) {
-  //   return <div>{error}</div>;
-  // }
+  const handleResBtnClick = () => {
+    setShowResolved(true);
+    setShowUnResolved(false);
+  };
+
+  const handleUnResBtnClick = () => {
+    setShowUnResolved(true);
+    setShowResolved(false);
+  };
+
+  const filterGrievances = (grievances) => {
+    if (showResolved) {
+      return grievances.filter(
+        (grievance) => grievance.grievanceStatus === "RESOLVED"
+      );
+    } else if (showUnResolved) {
+      return grievances.filter(
+        (grievance) => grievance.grievanceStatus !== "RESOLVED"
+      );
+    } else {
+      return grievances;
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()}`;
+    const formattedTime = `${date.getHours()}:${date.getMinutes()}`;
+
+    return `${formattedDate} ${formattedTime}`;
+  };
 
   return (
     <MarginTopBox>
@@ -183,12 +209,8 @@ export default function StudentDashboard() {
             <CustomH3 fontSize={FONTSIZE_BIGGER} color="white">
               Student Dashboard
             </CustomH3>
-
-            {/* //! Using Link component from 'react-router-dom' here */}
             <Box
-              // component={Link}
               sx={{ textDecoration: "none", marginTop: 2 }}
-              // to="/forms"
               id="back-to-top-anchor"
               onClick={handleNav}
             >
@@ -211,9 +233,9 @@ export default function StudentDashboard() {
           fontSize: FONTSIZE_MEDIUM,
         }}
       >
-        {["All", "Resolved", "Unresolved"].map((buttonText) => (
-          <StyledBtn>{buttonText}</StyledBtn>
-        ))}
+        <StyledBtn onClick={handleAllClick}>All</StyledBtn>
+        <StyledBtn onClick={handleResBtnClick}>Resolved</StyledBtn>
+        <StyledBtn onClick={handleUnResBtnClick}>Unresolved</StyledBtn>
       </StyledBtnGrp>
 
       <Box
@@ -224,27 +246,31 @@ export default function StudentDashboard() {
           marginBottom: 5,
         }}
       >
-        {grievanceData.map((data, index) => (
-          <SubContainer>
-            <StyledMainCtn>
-              {/* //! The loading animation and delay in loading the grievance/{id} page is intentional
-                  //! This should be removed while handling APIs requests */}
-              <Box key={index} onClick={() => handleTitleClick(data.id)}>
-                <StyledCardTitle>{data.title}</StyledCardTitle>
-              </Box>
-              <StyledSubCtnMobile>
-                <Box sx={{ display: "flex", columnGap: 1 }}>
-                  {data.cat.map((cat, catIndex) => (
-                    <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
-                  ))}
+        {filterGrievances(data) ? (
+          filterGrievances(data).map((raw, index) => (
+            <SubContainer key={index}>
+              <StyledMainCtn>
+                <Box key={index} onClick={() => handleTitleClick(raw.id)}>
+                  <StyledCardTitle>{raw.title}</StyledCardTitle>
                 </Box>
-                {/* <Box sx={{ fontSize: FONTSIZE_SMALL }}>
-                  Asked: {data.time} ago
-                </Box> */}
-              </StyledSubCtnMobile>
-            </StyledMainCtn>
-          </SubContainer>
-        ))}
+                <StyledSubCtnMobile>
+                  {/*<Box sx={{ display: "flex", columnGap: 1 }}>*/}
+                  {/*  {data.cat.map((cat, catIndex) => (*/}
+                  {/*      <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>*/}
+                  {/*  ))}*/}
+                  {/*</Box>*/}
+                  <Box sx={{ fontSize: FONTSIZE_SMALL }}>
+                    Asked: {formatDate(raw.asked)}
+                  </Box>
+                </StyledSubCtnMobile>
+              </StyledMainCtn>
+            </SubContainer>
+          ))
+        ) : (
+          <Box sx={{ textAlign: "center" }}>
+            <CustomH3>No grievance Data to Display</CustomH3>
+          </Box>
+        )}
       </Box>
 
       {/* Modal window with Loader */}
