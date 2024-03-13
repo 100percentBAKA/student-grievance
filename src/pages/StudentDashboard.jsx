@@ -161,7 +161,7 @@ export default function StudentDashboard() {
 
   const usn = JSON.parse(localStorage.getItem("userDetails"))?.usn;
   const { data, modal, setModal, error } = useFetchData(
-    `http://localhost:8080/student/${usn.toUpperCase()}/grievances`
+    `https://43.204.145.104:8000/student/${usn.toUpperCase()}/grievances`
   );
 
   const modelAndDelay = (to, delay = 2000) => {

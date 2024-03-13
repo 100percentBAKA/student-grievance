@@ -90,8 +90,9 @@ const LoginPage = () => {
       setModal(true);
       try {
         const basicAuthHeader = "Basic " + btoa(email + ":" + password);
+        console.log(basicAuthHeader);
         const response = await axios.get(
-          `http://localhost:8080/user/login/${email}`,
+          `https://43.204.145.104:8000/user/login/${email}`,
           {
             headers: {
               Authorization: basicAuthHeader,

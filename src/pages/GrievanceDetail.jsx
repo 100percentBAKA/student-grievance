@@ -280,6 +280,7 @@ function ReplyCtn({ responses }) {
                 comment.userAuthority === "STUDENT" ? "flex-start" : "flex-end",
             }}
           >
+            {/* {console.log(comment.userAuthority)} */}
             <Box
               sx={{
                 fontWeight: 600,
@@ -491,7 +492,7 @@ function AddReply({ grievanceID }) {
 export default function GrievanceDetail() {
   const { grievanceID } = useParams();
   const { data, modal, setModal, error } = useFetchData(
-    `http://localhost:8080/grievance/${grievanceID}`
+    `https://43.204.145.104:8000/grievance/${grievanceID}`
   );
 
   const [userAuth, setUserAuth] = useState(
@@ -500,6 +501,7 @@ export default function GrievanceDetail() {
 
   useEffect(() => {
     setUserAuth(JSON.parse(localStorage.getItem("userDetails")).userAuthority);
+    // console.log(userAuth);
   }, [setUserAuth]);
 
   return (
