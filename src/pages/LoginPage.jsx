@@ -136,13 +136,13 @@ const LoginPage = () => {
             alignItems: "center",
           }}
         >
-          <Box sx={{ mb: 3 }}>
+          {/* <Box sx={{ mb: 3 }}>
             <img src={rnsLogo} alt="RNSIT LOGO" />
           </Box>
 
           <Box sx={{ fontSize: "1.6rem", fontWeight: 500 }}>
             Student's Grievance Portal
-          </Box>
+          </Box> */}
 
           <Container
             component="main"
@@ -150,7 +150,6 @@ const LoginPage = () => {
               padding: 2,
               border: "1px solid black",
               borderRadius: "10px",
-              marginTop: 8,
               height: "fit-content",
               width: "100%",
             }}
