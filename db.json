@@ -1,0 +1,58 @@
+{
+  "grievances": [
+    {
+      "id": "1",
+      "title": "Title of the Grievance",
+      "askedBy": "Adarsh G S",
+      "description": "Description of the Grievance",
+      "student": {
+        "usn": "1RN21CS011"
+      },
+      "category": {
+        "category": "Academic Issues"
+      }
+    },
+    {
+      "id": "2",
+      "title": "Title of the Grievance",
+      "askedBy": "Mohith CH",
+      "description": "Description of the Grievance",
+      "student": {
+        "usn": "1RN21CS011"
+      },
+      "category": {
+        "category": "Academic Issues"
+      }
+    },
+    {
+      "id": "a30a",
+      "title": "In this updated version, the modal state is set to true when mutation.isLoading is true, and false otherwise. By providing [mutation.isLoading] as the dependency array, you ensure that the effect only runs when mutation.isLoading changes, preventing unnecessary re-renders.  This code explicitly handles both states of isLoading, making it clearer and more maintainable. Additionally, it follows the best practice of updating the state based on the current value of the dependency.",
+      "askedBy": "Adarsh G S",
+      "description": "In this updated version, the modal state is set to true when mutation.isLoading is true, and false otherwise. By providing [mutation.isLoading] as the dependency array, you ensure that the effect only runs when mutation.isLoading changes, preventing unnecessary re-renders.\n\nThis code explicitly handles both states of isLoading, making it clearer and more maintainable. Additionally, it follows the best practice of updating the state based on the current value of the dependency.",
+      "student": {
+        "usn": "1RN21CS011"
+      },
+      "category": {
+        "category": [
+          "Academic Issues",
+          "Health and Safety",
+          "Facility and Infrastructure"
+        ]
+      }
+    },
+    {
+      "id": "3214",
+      "title": "<Box   sx={{     display: \"flex\",     flexDirection: \"column\",     marginTop: 5,     marginBottom: 5,   }} >   {data && data.data ? (     data.data.map((data, index) => (       <SubContainer key={index}>         <StyledMainCtn>           <Box onClick={() => handleTitleClick(data.id)}>             <StyledCardTitle>{data.title}</StyledCardTitle>           </Box>           <StyledSubCtnMobile>             <Box sx={{ display: \"flex\", columnGap: 1 }}>               {data.cat.map((cat, catIndex) => (                 <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>               ))}             </Box>           </StyledSubCtnMobile>         </StyledMainCtn>       </SubContainer>     ))   ) : (     <div>No data available</div>   )} </Box>",
+      "askedBy": "Adarsh G S",
+      "description": "<Box\n  sx={{\n    display: \"flex\",\n    flexDirection: \"column\",\n    marginTop: 5,\n    marginBottom: 5,\n  }}\n>\n  {data && data.data ? (\n    data.data.map((data, index) => (\n      <SubContainer key={index}>\n        <StyledMainCtn>\n          <Box onClick={() => handleTitleClick(data.id)}>\n            <StyledCardTitle>{data.title}</StyledCardTitle>\n          </Box>\n          <StyledSubCtnMobile>\n            <Box sx={{ display: \"flex\", columnGap: 1 }}>\n              {data.cat.map((cat, catIndex) => (\n                <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>\n              ))}\n            </Box>\n          </StyledSubCtnMobile>\n        </StyledMainCtn>\n      </SubContainer>\n    ))\n  ) : (\n    <div>No data available</div>\n  )}\n</Box>",
+      "student": {
+        "usn": "1RN21CS011"
+      },
+      "category": {
+        "category": [
+          "Academic Issues"
+        ]
+      }
+    }
+  ]
+}
