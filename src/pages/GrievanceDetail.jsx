@@ -117,6 +117,7 @@ const formatDate = (dateString) => {
 };
 
 function GrievanceMainArea({ grievance, userAuth }) {
+  console.log(grievance);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -141,6 +142,29 @@ function GrievanceMainArea({ grievance, userAuth }) {
           }}
         >
           <StyledMainArea>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              Asked By:
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                  fontSize: "18px",
+                  fontWeight: 600,
+                }}
+              >
+                {/* <Avatar {...stringAvatar(grievance.askedBy)} /> */}
+                {grievance.askedBy}
+              </Box>
+            </Box>
             <Box
               sx={{
                 display: "flex",
