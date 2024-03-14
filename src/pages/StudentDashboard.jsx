@@ -249,9 +249,9 @@ export default function StudentDashboard() {
     }
   };
 
-  const filteredGrievances = filterGrievances(grievances).filter((grievance) =>
-    grievance.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredGrievances = filterGrievances(grievances).filter((grievance) =>
+  //   grievance.title.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -277,7 +277,7 @@ export default function StudentDashboard() {
                   Student Dashboard
                 </CustomH3>
 
-                {!userAuth === "STUDENT" && (
+                {userAuth === "STUDENT" && (
                   <Box
                     sx={{ textDecoration: "none", marginTop: 2 }}
                     onClick={handleNav}
