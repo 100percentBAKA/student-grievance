@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //* MUI components import
 import {
@@ -11,6 +11,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 //* native components import
 import CustomH3 from "../components/ui/CustomH3";
@@ -154,17 +156,49 @@ export default function StudentDashboard() {
 
   //? states
   const [showResolved, setShowResolved] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [showUnResolved, setShowUnResolved] = useState(false);
+  const [grievances, setGrievances] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   // ? handling programmatic navigation
   const navigate = useNavigate();
 
-  const usn = JSON.parse(localStorage.getItem("userDetails"))?.usn;
-  const { data, modal, setModal, error } = useFetchData(
-    `https://43.204.145.104:8000/student/${usn.toUpperCase()}/grievances`
-  );
+  //? handling conditional selection of api endpoint
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const usn = userDetails?.usn;
+  const userAuth = userDetails?.userAuthority;
+  const apiUrl =
+    userAuth === "FACULTY"
+      ? `https://43.204.145.104:8000/grievance/get?pageNo=${currentPage}`
+      : `https://43.204.145.104:8000/student/${usn.toUpperCase()}/grievances`;
 
-  const modelAndDelay = (to, delay = 2000) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      setModal(true);
+      try {
+        const response = await fetch(apiUrl);
+        const json = await response.json();
+
+        if (userAuth === "FACULTY") {
+          setGrievances(json.Content);
+          setTotalPages(json.TotalPages);
+        } else {
+          setGrievances(json);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setModal(false);
+      }
+    };
+
+    fetchData();
+  }, [apiUrl, currentPage, userAuth]);
+
+  const modelAndDelay = (to, delay = 1000) => {
     setModal(true);
     setTimeout(() => {
       setModal(false);
@@ -197,6 +231,10 @@ export default function StudentDashboard() {
     setShowResolved(false);
   };
 
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
   const filterGrievances = (grievances) => {
     if (showResolved) {
       return grievances.filter(
@@ -211,6 +249,10 @@ export default function StudentDashboard() {
     }
   };
 
+  const filteredGrievances = filterGrievances(grievances).filter((grievance) =>
+    grievance.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const formattedDate = `${date.getDate()}/${
@@ -222,110 +264,138 @@ export default function StudentDashboard() {
 
   return (
     <MarginTopBox>
-      <BannerBG
-        height={
-          isScreenSmaller ? BANNER_SIZE_DASHBOARD_MD : BANNER_SIZE_DASHBOARD
-        }
-      >
-        <SubContainer>
-          <StyledSubCtn>
-            <CustomH3 fontSize={FONTSIZE_BIGGER} color="white">
-              Student Dashboard
-            </CustomH3>
-            <Box
-              sx={{ textDecoration: "none", marginTop: 2 }}
-              id="back-to-top-anchor"
-              onClick={handleNav}
-            >
-              <ContainedButton padding="0.6rem 1rem">
-                Raise Grievance
-              </ContainedButton>
-            </Box>
-          </StyledSubCtn>
-        </SubContainer>
-      </BannerBG>
+      <Stack>
+        <BannerBG
+          height={
+            isScreenSmaller ? BANNER_SIZE_DASHBOARD_MD : BANNER_SIZE_DASHBOARD
+          }
+        >
+          <SubContainer>
+            <StyledSubCtn>
+              <Box id="back-to-top-anchor">
+                <CustomH3 fontSize={FONTSIZE_BIGGER} color="white">
+                  Student Dashboard
+                </CustomH3>
 
-      <StyledBtnGrp
-        variant="outlined"
-        aria-label="outlined button group"
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          fontSize: FONTSIZE_MEDIUM,
-        }}
-      >
-        <StyledBtn onClick={handleAllClick}>All</StyledBtn>
-        <StyledBtn onClick={handleResBtnClick}>Resolved</StyledBtn>
-        <StyledBtn onClick={handleUnResBtnClick}>Unresolved</StyledBtn>
-      </StyledBtnGrp>
-
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          marginTop: 5,
-          marginBottom: 5,
-        }}
-      >
-        {filterGrievances(data) &&
-          filterGrievances(data).map((raw, index) => (
-            <SubContainer key={index}>
-              <StyledMainCtn>
-                <StyledCtnHeader
-                  key={index}
-                  onClick={() => handleTitleClick(raw.id)}
-                >
-                  <StyledCardTitle>{raw.title}</StyledCardTitle>
+                {!userAuth === "STUDENT" && (
                   <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 2,
-                      // flex: 0.35,
-                    }}
+                    sx={{ textDecoration: "none", marginTop: 2 }}
+                    onClick={handleNav}
                   >
-                    <StyledCatSpan>{raw.id}</StyledCatSpan>
-                    <Tooltip title={raw.grievanceStatus}>
-                      <IconButton
-                        disableRipple
-                        sx={{
-                          width: "15px",
-                          height: "15px",
-                          borderRadius: "50%",
-                          backgroundColor: toolTipColor(raw.grievanceStatus),
-                        }}
-                      ></IconButton>
-                    </Tooltip>
+                    <ContainedButton padding="0.6rem 1rem">
+                      Raise Grievance
+                    </ContainedButton>
                   </Box>
-                </StyledCtnHeader>
-                <StyledSubCtnMobile>
-                  <Box sx={{ display: "flex", columnGap: 1 }}>
-                    {["Academic Issues", "Career Services"].map(
-                      (cat, catIndex) => (
-                        <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
-                      )
-                    )}
-                  </Box>
-                  <Box sx={{ fontSize: FONTSIZE_SMALL }}>
-                    Asked: {formatDate(raw.asked)}
-                  </Box>
-                </StyledSubCtnMobile>
-              </StyledMainCtn>
-            </SubContainer>
-          ))}
+                )}
+              </Box>
+            </StyledSubCtn>
+          </SubContainer>
+        </BannerBG>
 
-        {/* {filterGrievances(data).length < 0 && (
+        <StyledBtnGrp
+          variant="outlined"
+          aria-label="outlined button group"
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: FONTSIZE_MEDIUM,
+          }}
+        >
+          <StyledBtn onClick={handleAllClick}>All</StyledBtn>
+          <StyledBtn onClick={handleResBtnClick}>Resolved</StyledBtn>
+          <StyledBtn onClick={handleUnResBtnClick}>Unresolved</StyledBtn>
+        </StyledBtnGrp>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            marginTop: 5,
+            marginBottom: 5,
+          }}
+        >
+          {filterGrievances(grievances) &&
+            filterGrievances(grievances).map((raw, index) => (
+              <SubContainer key={index}>
+                <StyledMainCtn>
+                  <StyledCtnHeader
+                    key={index}
+                    onClick={() => handleTitleClick(raw.id)}
+                  >
+                    <StyledCardTitle>{raw.title}</StyledCardTitle>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 2,
+                      }}
+                    >
+                      <StyledCatSpan>{raw.id}</StyledCatSpan>
+                      <Tooltip title={raw.grievanceStatus}>
+                        <IconButton
+                          disableRipple
+                          sx={{
+                            width: "15px",
+                            height: "15px",
+                            borderRadius: "50%",
+                            backgroundColor: toolTipColor(raw.grievanceStatus),
+                          }}
+                        ></IconButton>
+                      </Tooltip>
+                    </Box>
+                  </StyledCtnHeader>
+                  <StyledSubCtnMobile>
+                    <Box sx={{ display: "flex", columnGap: 1 }}>
+                      {["Academic Issues", "Career Services"].map(
+                        (cat, catIndex) => (
+                          <StyledCatSpan key={catIndex}>{cat}</StyledCatSpan>
+                        )
+                      )}
+                    </Box>
+                    <Box sx={{ fontSize: FONTSIZE_SMALL }}>
+                      Asked: {formatDate(raw.asked)}
+                    </Box>
+                  </StyledSubCtnMobile>
+                </StyledMainCtn>
+              </SubContainer>
+            ))}
+
+          {/* {filterGrievances(data).length < 0 && (
           <Box sx={{ textAlign: "center" }}>
             <CustomH3>No grievance Data to Display</CustomH3>
           </Box>
         )} */}
-      </Box>
+        </Box>
 
-      {/* Modal window with Loader */}
-      <ModalWindowLoader modal={modal} setModal={setModal} />
+        {/* Modal window with Loader */}
+        <ModalWindowLoader modal={modal} setModal={setModal} />
+
+        <SubContainer>
+          <Box
+            sx={{
+              mt: 3,
+              width: "100%",
+              // bgcolor: "red",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {/* pagination counter */}
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={handlePageChange}
+              size="large"
+              variant="outlined"
+              color="primary"
+            />
+          </Box>
+        </SubContainer>
+      </Stack>
     </MarginTopBox>
   );
 }
