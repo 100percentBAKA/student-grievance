@@ -1,5 +1,5 @@
 //* main react imports 
-import React from 'react'
+import React, { useState } from 'react'
 
 //* native components/sections imports 
 import ScrollTop from "./components/ui/ScrollTop"
@@ -18,14 +18,19 @@ import LoginPage from './pages/LoginPage'
 
 // * use auth
 import { useAuth } from "./hooks/useAuth"
+import AuthLayout from './pages/AuthLayout'
+import RegisterPage from './pages/RegisterPage'
 
 export default function App() {
   const { isAuthenticated } = useAuth()
   const PrivateRoute = () => {
     return (
-      !isAuthenticated ? <Navigate to="/login" /> : <Outlet />
+      !isAuthenticated ? <Navigate to="/auth/login" /> : <Outlet />
     )
   }
+
+  //? states to manage navbar search
+  // const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <React.Fragment>
@@ -36,7 +41,10 @@ export default function App() {
           <Route path="/grievance/:grievanceID" element={<GrievanceDetail />} />
           <Route path="/forms" element={<GrievanceForm />} />
         </Route>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path='/auth' element={<AuthLayout />}>
+          <Route path="/auth/login" element={<LoginPage />} />
+          <Route path="/auth/register" element={<RegisterPage />} />
+        </Route>
         <Route path='*' element={<PageNotFound />}></Route>
       </Routes>
       {isAuthenticated && <ScrollTop />}

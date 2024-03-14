@@ -235,7 +235,7 @@ export default function Navbar() {
       localStorage.clear();
       logout();
       setModal(false);
-      navigate("/login");
+      navigate("/auth/login");
     }, 700);
   };
 
