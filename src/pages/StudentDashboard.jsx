@@ -376,7 +376,7 @@ export default function StudentDashboard() {
         <SubContainer>
           <Box
             sx={{
-              mt: 3,
+              my: 3,
               width: "100%",
               // bgcolor: "red",
               display: "flex",
