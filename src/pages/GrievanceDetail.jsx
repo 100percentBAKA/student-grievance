@@ -516,7 +516,7 @@ function AddReply({ grievanceID }) {
 export default function GrievanceDetail() {
   const { grievanceID } = useParams();
   const { data, modal, setModal, error } = useFetchData(
-    `https://43.204.145.104:8000/grievance/${grievanceID}`
+    `https://43.204.145.104:8000/api/v1/grievance/${grievanceID}`
   );
 
   const [userAuth, setUserAuth] = useState(

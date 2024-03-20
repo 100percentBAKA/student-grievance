@@ -123,7 +123,12 @@ const RegisterPage = () => {
               Sign up
             </Typography>
 
-            <Box component="form" noValidate sx={{ marginBottom: 3.2 }}>
+            <Box
+              component="form"
+              noValidate
+              sx={{ marginBottom: 3.2 }}
+              onSubmit={formik.handleSubmit}
+            >
               <Grid container spacing={2} sx={{ marginTop: 3 }}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -198,7 +203,7 @@ const RegisterPage = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <TextField
                     autoFocus
                     type="password"
@@ -218,7 +223,7 @@ const RegisterPage = () => {
                       formik.errors.confirmPassword
                     }
                   />
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12}>
                   <FormControl fullWidth>

@@ -62,7 +62,7 @@ const LoginPage = () => {
         const basicAuthHeader = "Basic " + btoa(email + ":" + password);
         // console.log(basicAuthHeader);
         const response = await axios.get(
-          `https://43.204.145.104:8000/user/login/${email}`,
+          `https://43.204.145.104:8000/api/v1/user/login/${email}`,
           {
             headers: {
               Authorization: basicAuthHeader,

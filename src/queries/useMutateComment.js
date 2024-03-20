@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function useMutateComment(grievanceID) {
     return useMutation(
-        (data) => axios.post(`https://43.204.145.104:8000/comment/add-comment/${grievanceID}`, data),
+        (data) => axios.post(`https://43.204.145.104:8000/api/v1/comment/add-comment/${grievanceID}`, data),
         {
             onSuccess: () => {
                 console.log('Comment posted successfully');

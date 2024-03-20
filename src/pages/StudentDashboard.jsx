@@ -172,8 +172,8 @@ export default function StudentDashboard() {
   const userAuth = userDetails?.userAuthority;
   const apiUrl =
     userAuth === "FACULTY"
-      ? `https://43.204.145.104:8000/grievance/get?pageNo=${currentPage}`
-      : `https://43.204.145.104:8000/student/${usn.toUpperCase()}/grievances`;
+      ? `https://43.204.145.104:8000/api/v1/grievance/get?pageNo=${currentPage}`
+      : `https://43.204.145.104:8000/api/v1/student/${usn.toUpperCase()}/grievances`;
 
   useEffect(() => {
     const fetchData = async () => {
