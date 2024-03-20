@@ -123,13 +123,8 @@ const RegisterPage = () => {
               Sign up
             </Typography>
 
-            <Box
-              component="form"
-              noValidate
-              sx={{ marginBottom: 3.2 }}
-              onSubmit={formik.handleSubmit}
-            >
-              <Grid container spacing={2} sx={{ marginTop: 3 }}>
+            <Box component="form" noValidate sx={{ marginBottom: 3 }}>
+              <Grid container spacing={1} sx={{ marginTop: 1.5 }}>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     autoFocus
