@@ -1,54 +1,65 @@
-//* main react imports 
-import React, { useState } from 'react'
+// //* main react imports 
+// import React, { useState } from 'react'
 
-//* native components/sections imports 
-import ScrollTop from "./components/ui/ScrollTop"
-import Footer from './components/Footer'
-import Navbar from './components/Navbar'
+// //* native components/sections imports 
+// import ScrollTop from "./components/ui/ScrollTop"
+// import Footer from './components/Footer'
+// import Navbar from './components/Navbar'
 
-//* pages imports 
-import StudentDashboard from './pages/StudentDashboard'
-import GrievanceDetail from './pages/GrievanceDetail'
-import GrievanceForm from './pages/GrievanceForm'
+// //* pages imports 
+// import StudentDashboard from './pages/StudentDashboard'
+// import GrievanceDetail from './pages/GrievanceDetail'
+// import GrievanceForm from './pages/GrievanceForm'
 
-//* react router imports 
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
-import PageNotFound from './pages/PageNotFound'
-import LoginPage from './pages/LoginPage'
+// //* react router imports 
+// import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
+// import PageNotFound from './pages/PageNotFound'
+// import LoginPage from './pages/LoginPage'
 
-// * use auth
-import { useAuth } from "./hooks/useAuth"
-import AuthLayout from './pages/AuthLayout'
-import RegisterPage from './pages/RegisterPage'
+// // * use auth
+// import { useAuth } from "./hooks/useAuth"
+// import AuthLayout from './pages/AuthLayout'
+// import RegisterPage from './pages/RegisterPage'
 
-export default function App() {
-  const { isAuthenticated } = useAuth()
-  const PrivateRoute = () => {
-    return (
-      !isAuthenticated ? <Navigate to="/auth/login" /> : <Outlet />
-    )
-  }
+// export default function App() {
+//   const { isAuthenticated } = useAuth()
+//   const PrivateRoute = () => {
+//     return (
+//       !isAuthenticated ? <Navigate to="/auth/login" /> : <Outlet />
+//     )
+//   }
 
-  //? states to manage navbar search
-  // const [searchQuery, setSearchQuery] = useState('');
+//   //? states to manage navbar search
+//   // const [searchQuery, setSearchQuery] = useState('');
 
+//   return (
+//     <React.Fragment>
+//       {isAuthenticated && <Navbar />}
+//       <Routes>
+//         <Route element={<PrivateRoute />}>
+//           <Route path="/" element={<StudentDashboard />} exact />
+//           <Route path="/grievance/:grievanceID" element={<GrievanceDetail />} />
+//           <Route path="/forms" element={<GrievanceForm />} />
+//         </Route>
+//         <Route path='/auth' element={<AuthLayout />}>
+//           <Route path="/auth/login" element={<LoginPage />} />
+//           <Route path="/auth/register" element={<RegisterPage />} />
+//         </Route>
+//         <Route path='*' element={<PageNotFound />}></Route>
+//       </Routes>
+//       {isAuthenticated && <ScrollTop />}
+//       {isAuthenticated && <Footer />}
+//     </React.Fragment>
+//   )
+// }
+
+const App = () => {
   return (
-    <React.Fragment>
-      {isAuthenticated && <Navbar />}
-      <Routes>
-        <Route element={<PrivateRoute />}>
-          <Route path="/" element={<StudentDashboard />} exact />
-          <Route path="/grievance/:grievanceID" element={<GrievanceDetail />} />
-          <Route path="/forms" element={<GrievanceForm />} />
-        </Route>
-        <Route path='/auth' element={<AuthLayout />}>
-          <Route path="/auth/login" element={<LoginPage />} />
-          <Route path="/auth/register" element={<RegisterPage />} />
-        </Route>
-        <Route path='*' element={<PageNotFound />}></Route>
-      </Routes>
-      {isAuthenticated && <ScrollTop />}
-      {isAuthenticated && <Footer />}
-    </React.Fragment>
+    <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ textAlign: "center" }}>Under Development</div>
+      <div style={{ textAlign: "center" }}>Launching very soon</div>
+    </div>
   )
 }
+
+export default App
